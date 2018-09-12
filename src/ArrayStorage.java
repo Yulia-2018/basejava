@@ -3,25 +3,23 @@
  */
 public class ArrayStorage {
     Resume[] storage = new Resume[10000];
+    int size = 0;
 
     void clear() {
-        for (int i = 0; i < storage.length; i++)
+        for (int i = 0; i < size; i++)
             storage[i] = null;
+        size = 0;
     }
 
     void save(Resume r) {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) {
-                storage[i] = r;
-                break;
-            }
-        }
+        storage[size] = r;
+        size = size + 1;
     }
 
     Resume get(String uuid) {
         Resume r = null;
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] != null && storage[i].uuid == uuid) {
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid == uuid) {
                 r = storage[i];
                 break;
             }
@@ -30,14 +28,11 @@ public class ArrayStorage {
     }
 
     void delete(String uuid) {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] != null && storage[i].uuid == uuid) {
-                for (int j = i; j < storage.length; j++) {
-                    if (j != storage.length - 1)
-                        storage[j] = storage[j + 1];
-                    else
-                        storage[j] = null;
-                }
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid == uuid) {
+                for (int j = i; j < size - 1; j++)
+                    storage[j] = storage[j + 1];
+                size = size - 1;
                 break;
             }
         }
@@ -47,17 +42,13 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        return storage;
+        Resume[] r = new Resume[size];
+        for (int i = 0; i < size; i++)
+            r[i] = storage[i];
+        return r;
     }
 
     int size() {
-        int s = 0;
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) {
-                s = i;
-                break;
-            }
-        }
-        return s;
+        return size;
     }
 }
