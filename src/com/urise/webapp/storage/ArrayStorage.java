@@ -10,63 +10,73 @@ public class ArrayStorage {
     private int size = 0;
 
     public void clear() {
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++) {
             storage[i] = null;
+        }
         size = 0;
     }
 
-    public void update(Resume r) {
-        int index = getindex(r.getUuid());
-        if (index != -1)
-            storage[index] = r;
-        else System.out.println("Resume " + r.getUuid() + " не существует");
+    public void update(Resume resume) {
+        int index = getIndex(resume.getUuid());
+        if (index != -1) {
+            storage[index] = resume;
+        } else {
+            System.out.println("Resume " + resume.getUuid() + " не существует");
+        }
     }
 
-    public void save(Resume r) {
+    public void save(Resume resume) {
         if (size == storage.length) {
             System.out.println("Массив с Resume уже заполнен");
         } else {
-            if (getindex(r.getUuid()) == -1) {
-                storage[size] = r;
+            if (getIndex(resume.getUuid()) == -1) {
+                storage[size] = resume;
                 size++;
-            } else System.out.println("Resume " + r.getUuid() + " уже существует");
+            } else {
+                System.out.println("Resume " + resume.getUuid() + " уже существует");
+            }
         }
     }
 
     public Resume get(String uuid) {
-        int index = getindex(uuid);
+        int index = getIndex(uuid);
         if (index == -1) {
             System.out.println("Resume " + uuid + " не существует");
             return null;
-        } else return storage[index];
+        } else {
+            return storage[index];
+        }
     }
 
     public void delete(String uuid) {
-        int index = getindex(uuid);
+        int index = getIndex(uuid);
         if (index != -1) {
             storage[index] = storage[size - 1];
             storage[size - 1] = null;
             size--;
-        } else System.out.println("Resume " + uuid + " не существует");
+        } else {
+            System.out.println("Resume " + uuid + " не существует");
+        }
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     public Resume[] getAll() {
-        Resume[] r = new Resume[size];
-        for (int i = 0; i < size; i++)
-            r[i] = storage[i];
-        return r;
+        Resume[] resumes = new Resume[size];
+        for (int i = 0; i < size; i++) {
+            resumes[i] = storage[i];
+        }
+        return resumes;
     }
 
     public int size() {
         return size;
     }
 
-    int getindex(String uuid) {
+    private int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid() == uuid) {
+            if (storage[i].getUuid().equals(uuid)) {
                 return i;
             }
         }
