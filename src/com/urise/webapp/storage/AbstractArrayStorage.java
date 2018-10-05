@@ -1,34 +1,32 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.exception.ExistStorageException;
-import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
 
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage {
 
     protected static final int STORAGE_LIMIT = 10_000;
 
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
-    public void clear() {
+    public void clearStorage() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
-    public void update(Resume resume) {
+    public void updateObject(Resume resume) {
         int index = getIndex(resume.getUuid());
         if (index >= 0) {
             storage[index] = resume;
         } else {
-            throw new NotExistStorageException(resume.getUuid());
+            notExistObject(resume.getUuid());
         }
     }
 
-    public void save(Resume resume) {
+    public void saveObject(Resume resume) {
         int index = getIndex(resume.getUuid());
         if (index <= -1) {
             if (size >= STORAGE_LIMIT) {
@@ -38,38 +36,39 @@ public abstract class AbstractArrayStorage implements Storage {
                 size++;
             }
         } else {
-            throw new ExistStorageException(resume.getUuid());
+            existObject(resume.getUuid());
         }
     }
 
-    public Resume get(String uuid) {
+    public Resume getObject(String uuid) {
         int index = getIndex(uuid);
         if (index <= -1) {
-            throw new NotExistStorageException(uuid);
+            notExistObject(uuid);
+            return null;
         } else {
             return storage[index];
         }
     }
 
-    public void delete(String uuid) {
+    public void deleteObject(String uuid) {
         int index = getIndex(uuid);
         if (index >= 0) {
             deleteResume(index);
             storage[size - 1] = null;
             size--;
         } else {
-            throw new NotExistStorageException(uuid);
+            notExistObject(uuid);
         }
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
-    public Resume[] getAll() {
+    public Resume[] getAllObject() {
         return Arrays.copyOfRange(storage, 0, size);
     }
 
-    public int size() {
+    public int sizeStorage() {
         return size;
     }
 
