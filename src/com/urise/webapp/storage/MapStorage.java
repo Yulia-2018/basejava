@@ -10,43 +10,42 @@ public class MapStorage extends AbstractStorage {
     protected Map<String, Resume> storage = new HashMap();
 
     @Override
-    public void clearStorage() {
+    public void clear() {
         storage.clear();
     }
 
     @Override
-    public void updateObject(Resume resume) {
-        storage.replace(resume.getUuid(), resume);
+    public void updateObject(Object searchKey, Resume resume) {
+        storage.replace((String) searchKey, resume);
     }
 
     @Override
-    public void saveObject(Resume resume) {
-        final String key = resume.getUuid();
-        storage.put(key, resume);
+    public void saveObject(Object searchKey, Resume resume) {
+        storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    public Resume getObject(String uuid) {
-        return storage.get(uuid);
+    public Resume getObject(Object searchKey) {
+        return storage.get(searchKey);
     }
 
     @Override
-    protected void deleteObject(Object key) {
-        storage.remove(key);
+    protected void deleteObject(Object searchKey) {
+        storage.remove(searchKey);
     }
 
     @Override
-    public Resume[] getAllObject() {
+    public Resume[] getAll() {
         return storage.values().toArray(new Resume[0]);
     }
 
     @Override
-    public int sizeStorage() {
+    public int size() {
         return storage.size();
     }
 
     @Override
-    protected String getIndex(String uuid) {
+    protected String getSearchKey(String uuid) {
         if (storage.containsKey(uuid)) {
             return uuid;
         } else {
@@ -55,8 +54,8 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Boolean getExistObject(Object key) {
-        if (key == null) {
+    protected Boolean getExistObject(Object searchKey) {
+        if (searchKey == null) {
             return false;
         } else {
             return true;

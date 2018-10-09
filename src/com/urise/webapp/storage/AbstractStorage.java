@@ -6,86 +6,57 @@ import com.urise.webapp.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
-    public void clear() {
-        clearStorage();
-    }
-
     public void update(Resume resume) {
         final String uuid = resume.getUuid();
-        final Boolean check = checkExistObject(uuid);
+        final Object searchKey = getSearchKey(uuid);
+        final Boolean check = getExistObject(searchKey);
         if (check) {
-            updateObject(resume);
+            updateObject(searchKey, resume);
         } else {
-            notExistObject(uuid);
+            throw new NotExistStorageException(uuid);
         }
     }
 
     public void save(Resume resume) {
         final String uuid = resume.getUuid();
-        final Boolean check = checkExistObject(uuid);
+        final Object searchKey = getSearchKey(uuid);
+        final Boolean check = getExistObject(searchKey);
         if (!check) {
-            saveObject(resume);
+            saveObject(searchKey, resume);
         } else {
-            existObject(uuid);
+            throw new ExistStorageException(uuid);
         }
     }
 
     public Resume get(String uuid) {
-        final Boolean check = checkExistObject(uuid);
+        final Object searchKey = getSearchKey(uuid);
+        final Boolean check = getExistObject(searchKey);
         if (check) {
-            return getObject(uuid);
+            return getObject(searchKey);
         } else {
-            notExistObject(uuid);
+            throw new NotExistStorageException(uuid);
         }
-        return null;
     }
 
     public void delete(String uuid) {
-        final Object key = getIndex(uuid);
-        final Boolean check = getExistObject(key);
+        final Object searchKey = getSearchKey(uuid);
+        final Boolean check = getExistObject(searchKey);
         if (check) {
-            deleteObject(key);
+            deleteObject(searchKey);
         } else {
-            notExistObject(uuid);
+            throw new NotExistStorageException(uuid);
         }
     }
 
-    public Resume[] getAll() {
-        return getAllObject();
-    }
+    protected abstract void updateObject(Object searchKey, Resume resume);
 
-    public int size() {
-        return sizeStorage();
-    }
+    protected abstract void saveObject(Object searchKey, Resume resume);
 
-    protected void existObject(String uuid) {
-        throw new ExistStorageException(uuid);
-    }
+    protected abstract Resume getObject(Object searchKey);
 
-    protected void notExistObject(String uuid) {
-        throw new NotExistStorageException(uuid);
-    }
+    protected abstract void deleteObject(Object searchKey);
 
-    protected abstract void clearStorage();
+    protected abstract Object getSearchKey(String uuid);
 
-    protected abstract void updateObject(Resume resume);
-
-    protected abstract void saveObject(Resume resume);
-
-    protected abstract Resume getObject(String uuid);
-
-    protected abstract void deleteObject(Object key);
-
-    protected abstract Resume[] getAllObject();
-
-    protected abstract int sizeStorage();
-
-    protected abstract Object getIndex(String uuid);
-
-    protected abstract Boolean getExistObject(Object key);
-
-    protected Boolean checkExistObject(String uuid) {
-        final Object key = getIndex(uuid);
-        return getExistObject(key);
-    }
+    protected abstract Boolean getExistObject(Object searchKey);
 }

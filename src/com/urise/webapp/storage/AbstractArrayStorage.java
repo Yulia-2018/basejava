@@ -13,37 +13,34 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected int size = 0;
 
     @Override
-    public void clearStorage() {
+    public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
     @Override
-    public void updateObject(Resume resume) {
-        final Integer index = (Integer) getIndex(resume.getUuid());
-        storage[index] = resume;
+    public void updateObject(Object searchKey, Resume resume) {
+        storage[(Integer) searchKey] = resume;
     }
 
     @Override
-    public void saveObject(Resume resume) {
-        final Integer index = (Integer) getIndex(resume.getUuid());
+    public void saveObject(Object searchKey, Resume resume) {
         if (size >= STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
         } else {
-            saveResume(resume, index);
+            saveResume((Integer) searchKey, resume);
             size++;
         }
     }
 
     @Override
-    public Resume getObject(String uuid) {
-        final Integer index = (Integer) getIndex(uuid);
-        return storage[index];
+    public Resume getObject(Object searchKey) {
+        return storage[(Integer) searchKey];
     }
 
     @Override
-    public void deleteObject(Object key) {
-        deleteResume((Integer) key);
+    public void deleteObject(Object searchKey) {
+        deleteResume((Integer) searchKey);
         storage[size - 1] = null;
         size--;
     }
@@ -52,16 +49,16 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     @Override
-    public Resume[] getAllObject() {
+    public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
     }
 
     @Override
-    public int sizeStorage() {
+    public int size() {
         return size;
     }
 
-    protected abstract void saveResume(Resume resume, int index);
+    protected abstract void saveResume(int index, Resume resume);
 
     protected abstract void deleteResume(int index);
 }
