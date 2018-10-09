@@ -12,62 +12,51 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
+    @Override
     public void clearStorage() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
+    @Override
     public void updateObject(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            storage[index] = resume;
-        } else {
-            notExistObject(resume.getUuid());
-        }
+        final Integer index = (Integer) getIndex(resume.getUuid());
+        storage[index] = resume;
     }
 
+    @Override
     public void saveObject(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index <= -1) {
-            if (size >= STORAGE_LIMIT) {
-                throw new StorageException("Storage overflow", resume.getUuid());
-            } else {
-                saveResume(resume, index);
-                size++;
-            }
+        final Integer index = (Integer) getIndex(resume.getUuid());
+        if (size >= STORAGE_LIMIT) {
+            throw new StorageException("Storage overflow", resume.getUuid());
         } else {
-            existObject(resume.getUuid());
+            saveResume(resume, index);
+            size++;
         }
     }
 
+    @Override
     public Resume getObject(String uuid) {
-        int index = getIndex(uuid);
-        if (index <= -1) {
-            notExistObject(uuid);
-            return null;
-        } else {
-            return storage[index];
-        }
+        final Integer index = (Integer) getIndex(uuid);
+        return storage[index];
     }
 
-    public void deleteObject(String uuid) {
-        int index = getIndex(uuid);
-        if (index >= 0) {
-            deleteResume(index);
-            storage[size - 1] = null;
-            size--;
-        } else {
-            notExistObject(uuid);
-        }
+    @Override
+    public void deleteObject(Object key) {
+        deleteResume((Integer) key);
+        storage[size - 1] = null;
+        size--;
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
+    @Override
     public Resume[] getAllObject() {
         return Arrays.copyOfRange(storage, 0, size);
     }
 
+    @Override
     public int sizeStorage() {
         return size;
     }
@@ -75,7 +64,4 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected abstract void saveResume(Resume resume, int index);
 
     protected abstract void deleteResume(int index);
-
-    protected abstract int getIndex(String uuid);
-
 }

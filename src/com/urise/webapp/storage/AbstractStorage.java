@@ -11,19 +11,43 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public void update(Resume resume) {
-        updateObject(resume);
+        final String uuid = resume.getUuid();
+        final Boolean check = checkExistObject(uuid);
+        if (check) {
+            updateObject(resume);
+        } else {
+            notExistObject(uuid);
+        }
     }
 
     public void save(Resume resume) {
-        saveObject(resume);
+        final String uuid = resume.getUuid();
+        final Boolean check = checkExistObject(uuid);
+        if (!check) {
+            saveObject(resume);
+        } else {
+            existObject(uuid);
+        }
     }
 
     public Resume get(String uuid) {
-        return getObject(uuid);
+        final Boolean check = checkExistObject(uuid);
+        if (check) {
+            return getObject(uuid);
+        } else {
+            notExistObject(uuid);
+        }
+        return null;
     }
 
     public void delete(String uuid) {
-        deleteObject(uuid);
+        final Object key = getIndex(uuid);
+        final Boolean check = getExistObject(key);
+        if (check) {
+            deleteObject(key);
+        } else {
+            notExistObject(uuid);
+        }
     }
 
     public Resume[] getAll() {
@@ -50,9 +74,18 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract Resume getObject(String uuid);
 
-    protected abstract void deleteObject(String uuid);
+    protected abstract void deleteObject(Object key);
 
     protected abstract Resume[] getAllObject();
 
     protected abstract int sizeStorage();
+
+    protected abstract Object getIndex(String uuid);
+
+    protected abstract Boolean getExistObject(Object key);
+
+    protected Boolean checkExistObject(String uuid) {
+        final Object key = getIndex(uuid);
+        return getExistObject(key);
+    }
 }

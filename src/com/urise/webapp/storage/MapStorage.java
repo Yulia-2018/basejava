@@ -16,41 +16,23 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     public void updateObject(Resume resume) {
-        final String key = resume.getUuid();
-        if (!storage.containsKey(key)) {
-            notExistObject(key);
-        } else {
-            storage.replace(key, resume);
-        }
+        storage.replace(resume.getUuid(), resume);
     }
 
     @Override
     public void saveObject(Resume resume) {
         final String key = resume.getUuid();
-        if (storage.containsKey(key)) {
-            existObject(key);
-        } else {
-            storage.put(key, resume);
-        }
+        storage.put(key, resume);
     }
 
     @Override
     public Resume getObject(String uuid) {
-        if (!storage.containsKey(uuid)) {
-            notExistObject(uuid);
-            return null;
-        } else {
-            return storage.get(uuid);
-        }
+        return storage.get(uuid);
     }
 
     @Override
-    public void deleteObject(String uuid) {
-        if (!storage.containsKey(uuid)) {
-            notExistObject(uuid);
-        } else {
-            storage.remove(uuid);
-        }
+    protected void deleteObject(Object key) {
+        storage.remove(key);
     }
 
     @Override
@@ -61,5 +43,23 @@ public class MapStorage extends AbstractStorage {
     @Override
     public int sizeStorage() {
         return storage.size();
+    }
+
+    @Override
+    protected String getIndex(String uuid) {
+        if (storage.containsKey(uuid)) {
+            return uuid;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    protected Boolean getExistObject(Object key) {
+        if (key == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
