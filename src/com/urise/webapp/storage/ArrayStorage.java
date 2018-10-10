@@ -26,14 +26,4 @@ public class ArrayStorage extends AbstractArrayStorage {
         }
         return -1;
     }
-
-    @Override
-    protected Boolean getExistObject(Object searchKey) {
-        if ((Integer) searchKey <= -1) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
 }

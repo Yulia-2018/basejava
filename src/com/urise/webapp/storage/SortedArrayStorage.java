@@ -28,14 +28,4 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         Resume searchKey = new Resume(uuid);
         return Arrays.binarySearch(storage, 0, size, searchKey);
     }
-
-    @Override
-    protected Boolean getExistObject(Object searchKey) {
-        if ((Integer) searchKey <= -1) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
 }

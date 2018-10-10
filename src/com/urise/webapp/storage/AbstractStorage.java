@@ -9,8 +9,8 @@ public abstract class AbstractStorage implements Storage {
     public void update(Resume resume) {
         final String uuid = resume.getUuid();
         final Object searchKey = getSearchKey(uuid);
-        final Boolean check = getExistObject(searchKey);
-        if (check) {
+        final Boolean exist = isExist(searchKey);
+        if (exist) {
             updateObject(searchKey, resume);
         } else {
             throw new NotExistStorageException(uuid);
@@ -20,8 +20,8 @@ public abstract class AbstractStorage implements Storage {
     public void save(Resume resume) {
         final String uuid = resume.getUuid();
         final Object searchKey = getSearchKey(uuid);
-        final Boolean check = getExistObject(searchKey);
-        if (!check) {
+        final Boolean exist = isExist(searchKey);
+        if (!exist) {
             saveObject(searchKey, resume);
         } else {
             throw new ExistStorageException(uuid);
@@ -30,8 +30,8 @@ public abstract class AbstractStorage implements Storage {
 
     public Resume get(String uuid) {
         final Object searchKey = getSearchKey(uuid);
-        final Boolean check = getExistObject(searchKey);
-        if (check) {
+        final Boolean exist = isExist(searchKey);
+        if (exist) {
             return getObject(searchKey);
         } else {
             throw new NotExistStorageException(uuid);
@@ -40,8 +40,8 @@ public abstract class AbstractStorage implements Storage {
 
     public void delete(String uuid) {
         final Object searchKey = getSearchKey(uuid);
-        final Boolean check = getExistObject(searchKey);
-        if (check) {
+        final Boolean exist = isExist(searchKey);
+        if (exist) {
             deleteObject(searchKey);
         } else {
             throw new NotExistStorageException(uuid);
@@ -57,6 +57,7 @@ public abstract class AbstractStorage implements Storage {
     protected abstract void deleteObject(Object searchKey);
 
     protected abstract Object getSearchKey(String uuid);
+    //protected abstract Object getSearchKey(Resume resume);
 
-    protected abstract Boolean getExistObject(Object searchKey);
+    protected abstract Boolean isExist(Object searchKey);
 }
