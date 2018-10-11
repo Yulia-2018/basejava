@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import static com.urise.webapp.storage.AbstractArrayStorage.STORAGE_LIMIT;
 
-public abstract class AbstractArrayStorageTest {
+public abstract class AbstractStorageTest {
 
     private Storage storage;
 
@@ -26,7 +26,7 @@ public abstract class AbstractArrayStorageTest {
     // For method "update"
     private static final Resume RESUME_5 = new Resume(UUID_1);
 
-    protected AbstractArrayStorageTest(Storage storage) {
+    protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
     }
 
