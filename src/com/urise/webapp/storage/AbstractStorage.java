@@ -8,44 +8,42 @@ public abstract class AbstractStorage implements Storage {
 
     public void update(Resume resume) {
         final String uuid = resume.getUuid();
-        final Object searchKey = getSearchKey(uuid);
-        final Boolean exist = isExist(searchKey);
-        if (exist) {
-            updateObject(searchKey, resume);
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
+        final Object searchKey = getExistedSearchKey(uuid);
+        updateObject(searchKey, resume);
     }
 
     public void save(Resume resume) {
         final String uuid = resume.getUuid();
-        final Object searchKey = getSearchKey(uuid);
-        final Boolean exist = isExist(searchKey);
-        if (!exist) {
-            saveObject(searchKey, resume);
-        } else {
-            throw new ExistStorageException(uuid);
-        }
+        final Object searchKey = getNotExistedSearchKey(uuid);
+        saveObject(searchKey, resume);
     }
 
     public Resume get(String uuid) {
-        final Object searchKey = getSearchKey(uuid);
-        final Boolean exist = isExist(searchKey);
-        if (exist) {
-            return getObject(searchKey);
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
+        final Object searchKey = getExistedSearchKey(uuid);
+        return getObject(searchKey);
     }
 
     public void delete(String uuid) {
+        final Object searchKey = getExistedSearchKey(uuid);
+        deleteObject(searchKey);
+    }
+
+    private Object getNotExistedSearchKey(String uuid) {
         final Object searchKey = getSearchKey(uuid);
-        final Boolean exist = isExist(searchKey);
+        final boolean exist = isExist(searchKey);
         if (exist) {
-            deleteObject(searchKey);
-        } else {
+            throw new ExistStorageException(uuid);
+        }
+        return searchKey;
+    }
+
+    private Object getExistedSearchKey(String uuid) {
+        final Object searchKey = getSearchKey(uuid);
+        final boolean exist = isExist(searchKey);
+        if (!exist) {
             throw new NotExistStorageException(uuid);
         }
+        return searchKey;
     }
 
     protected abstract void updateObject(Object searchKey, Resume resume);
