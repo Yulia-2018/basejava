@@ -16,12 +16,12 @@ public abstract class AbstractStorageTest {
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
 
-    private static final Resume RESUME_1 = new Resume(UUID_1);
-    private static final Resume RESUME_2 = new Resume(UUID_2);
-    private static final Resume RESUME_3 = new Resume(UUID_3);
-    private static final Resume RESUME_4 = new Resume(UUID_4);
+    private static final Resume RESUME_1 = new Resume(UUID_1, "Inanov Dmitrii");
+    private static final Resume RESUME_2 = new Resume(UUID_2, "Petrov Maxim");
+    private static final Resume RESUME_3 = new Resume(UUID_3, "Petrov Maxim");
+    private static final Resume RESUME_4 = new Resume(UUID_4, "Inanov Petr");
     // For method "update"
-    private static final Resume RESUME_5 = new Resume(UUID_1);
+    private static final Resume RESUME_5 = new Resume(UUID_1, "Sidorov Konstantin");
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
