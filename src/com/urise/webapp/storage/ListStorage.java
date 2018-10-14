@@ -15,17 +15,17 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public void updateObject(Object searchKey, Resume resume) {
+    protected void updateObject(Object searchKey, Resume resume) {
         storage.set((Integer) searchKey, resume);
     }
 
     @Override
-    public void saveObject(Object searchKey, Resume resume) {
+    protected void saveObject(Object searchKey, Resume resume) {
         storage.add(resume);
     }
 
     @Override
-    public Resume getObject(Object searchKey) {
+    protected Resume getObject(Object searchKey) {
         return storage.get((Integer) searchKey);
     }
 
@@ -36,8 +36,8 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return storage.toArray(new Resume[storage.size()]);
+    protected List<Resume> getListResume() {
+        return storage;
     }
 
     @Override
