@@ -2,14 +2,14 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MapResumeStorage extends AbstractStorage {
 
-    protected Map<Resume, Resume> storage = new HashMap<>();
+    protected Map<String, Resume> storage = new HashMap<>();
 
     @Override
     public void clear() {
@@ -18,12 +18,13 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     protected void updateObject(Object searchKey, Resume resume) {
-        storage.replace((Resume) searchKey, resume);
+        final Resume keyResume = (Resume) searchKey;
+        storage.replace(keyResume.getUuid(), resume);
     }
 
     @Override
     protected void saveObject(Object searchKey, Resume resume) {
-        storage.put(resume, resume);
+        storage.put(resume.getUuid(), resume);
     }
 
     @Override
@@ -33,13 +34,13 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     protected void deleteObject(Object searchKey) {
-        storage.remove(searchKey);
+        final Resume keyResume = (Resume) searchKey;
+        storage.remove(keyResume.getUuid());
     }
 
     @Override
     protected List<Resume> getListResume() {
-        final Resume[] resumes = storage.values().toArray(new Resume[storage.size()]);
-        return Arrays.asList(resumes);
+        return new ArrayList<>(storage.values());
     }
 
     @Override
@@ -49,17 +50,11 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     protected Object getSearchKey(String uuid) {
-        for (Resume resume : storage.values()) {
-            //for (Resume resume : storage.keySet()) {
-            if (resume.getUuid().equals(uuid)) {
-                return resume;
-            }
-        }
-        return null;
+        return storage.get(uuid);
     }
 
     @Override
     protected boolean isExist(Object searchKey) {
-        return storage.containsKey(searchKey);
+        return storage.containsValue(searchKey);
     }
 }
