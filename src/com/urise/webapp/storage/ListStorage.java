@@ -5,7 +5,7 @@ import com.urise.webapp.model.Resume;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
 
     protected List<Resume> storage = new ArrayList<>();
 
@@ -15,24 +15,23 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateObject(Object searchKey, Resume resume) {
-        storage.set((Integer) searchKey, resume);
+    protected void updateObject(Integer index, Resume resume) {
+        storage.set(index, resume);
     }
 
     @Override
-    protected void saveObject(Object searchKey, Resume resume) {
+    protected void saveObject(Integer index, Resume resume) {
         storage.add(resume);
     }
 
     @Override
-    protected Resume getObject(Object searchKey) {
-        return storage.get((Integer) searchKey);
+    protected Resume getObject(Integer index) {
+        return storage.get(index);
     }
 
     @Override
-    protected void deleteObject(Object searchKey) {
-        final int index = (Integer) searchKey;
-        storage.remove(index);
+    protected void deleteObject(Integer index) {
+        storage.remove(index.intValue());
     }
 
     @Override
@@ -56,7 +55,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        return (Integer) searchKey >= 0;
+    protected boolean isExist(Integer index) {
+        return index >= 0;
     }
 }
