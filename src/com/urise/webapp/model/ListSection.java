@@ -2,7 +2,7 @@ package com.urise.webapp.model;
 
 import java.util.List;
 
-public class ListSection {
+public class ListSection extends Section {
 
     private List<String> list;
 
@@ -15,6 +15,7 @@ public class ListSection {
         for (String element : list) {
             sb.append(element).append("\n");
         }
+        sb.delete(sb.length() - 1, sb.length());
         return sb.toString();
     }
 

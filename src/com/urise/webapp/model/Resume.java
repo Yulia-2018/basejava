@@ -14,14 +14,8 @@ public class Resume {
 
     private final String fullName;
 
-    private Map<ContactsType, String> contacts;
-
-    private TextSection objective;
-    private TextSection personal;
-    private ListSection achievement;
-    private ListSection qualifications;
-    private Map<String, OrganizationSection> experience;
-    private Map<String, OrganizationSection> education;
+    private Map<ContactType, String> contact;
+    private Map<SectionType, Section> section;
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -36,24 +30,14 @@ public class Resume {
 
     public Resume(String uuid,
                   String fullName,
-                  Map<ContactsType, String> listContacts,
-                  TextSection textObjective,
-                  TextSection textPersonal,
-                  ListSection listAchievement,
-                  ListSection listQualifications,
-                  Map<String, OrganizationSection> listExperience,
-                  Map<String, OrganizationSection> listEducation) {
+                  Map<ContactType, String> contact,
+                  Map<SectionType, Section> section) {
         Objects.requireNonNull(uuid, "uuid must not be null");
         Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
-        this.contacts = listContacts;
-        this.objective = textObjective;
-        this.personal = textPersonal;
-        this.achievement = listAchievement;
-        this.qualifications = listQualifications;
-        this.experience = listExperience;
-        this.education = listEducation;
+        this.contact = contact;
+        this.section = section;
     }
 
     public String getUuid() {
@@ -64,32 +48,20 @@ public class Resume {
         return fullName;
     }
 
-    public Map<ContactsType, String> getContacts() {
-        return contacts;
+    public String getContact(ContactType type) {
+        return contact.get(type);
     }
 
-    public TextSection getObjective() {
-        return objective;
+    public Section getSection(SectionType type) {
+        return section.get(type);
     }
 
-    public TextSection getPersonal() {
-        return personal;
+    public void setContact(Map<ContactType, String> contact) {
+        this.contact = contact;
     }
 
-    public ListSection getAchievement() {
-        return achievement;
-    }
-
-    public ListSection getQualifications() {
-        return qualifications;
-    }
-
-    public Map<String, OrganizationSection> getExperience() {
-        return experience;
-    }
-
-    public Map<String, OrganizationSection> getEducation() {
-        return education;
+    public void setSection(Map<SectionType, Section> section) {
+        this.section = section;
     }
 
     @Override

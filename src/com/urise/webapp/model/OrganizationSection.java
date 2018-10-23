@@ -1,44 +1,21 @@
 package com.urise.webapp.model;
 
-import java.time.LocalDate;
+import java.util.Map;
 
-public class OrganizationSection {
+public class OrganizationSection extends Section {
 
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private String position;
-    private String description;
+    private Map<String, Organization> map;
 
-    public OrganizationSection(LocalDate startDate, LocalDate endDate, String position, String description) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.position = position;
-        this.description = description;
+    public OrganizationSection(Map<String, Organization> map) {
+        this.map = map;
     }
 
     public String toString() {
-        return startDate.toString() + " - " + endDate.toString() + "\n" + position + "\n" + description;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        OrganizationSection that = (OrganizationSection) o;
-
-        if (startDate != null ? !startDate.equals(that.startDate) : that.startDate != null) return false;
-        if (endDate != null ? !endDate.equals(that.endDate) : that.endDate != null) return false;
-        if (position != null ? !position.equals(that.position) : that.position != null) return false;
-        return description != null ? description.equals(that.description) : that.description == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = startDate != null ? startDate.hashCode() : 0;
-        result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
-        result = 31 * result + (position != null ? position.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        return result;
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Organization> element : map.entrySet()) {
+            sb.append("\n").append(element.getKey()).append("\n").append(element.getValue()).append("\n");
+        }
+        sb.delete(sb.length() - 1, sb.length());
+        return sb.toString();
     }
 }
