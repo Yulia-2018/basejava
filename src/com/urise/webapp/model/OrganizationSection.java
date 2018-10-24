@@ -1,21 +1,36 @@
 package com.urise.webapp.model;
 
-import java.util.Map;
+import java.util.List;
 
 public class OrganizationSection extends Section {
 
-    private Map<String, Organization> map;
+    private List<Organization> list;
 
-    public OrganizationSection(Map<String, Organization> map) {
-        this.map = map;
+    public OrganizationSection(List<Organization> list) {
+        this.list = list;
     }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, Organization> element : map.entrySet()) {
-            sb.append("\n").append(element.getKey()).append("\n").append(element.getValue()).append("\n");
+        for (Organization element : list) {
+            sb.append(element).append("\n");
         }
         sb.delete(sb.length() - 1, sb.length());
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OrganizationSection that = (OrganizationSection) o;
+
+        return list != null ? list.equals(that.list) : that.list == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return list != null ? list.hashCode() : 0;
     }
 }

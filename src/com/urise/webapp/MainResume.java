@@ -3,10 +3,7 @@ package com.urise.webapp;
 import com.urise.webapp.model.*;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 public class MainResume {
@@ -14,7 +11,7 @@ public class MainResume {
         String fullName = "Григорий Кислин";
         Resume resume = new Resume(fullName);
 
-        Map<ContactType, String> listContact = new EnumMap<ContactType, String>(ContactType.class);
+        Map<ContactType, String> listContact = new EnumMap<>(ContactType.class);
         listContact.put(ContactType.PHONE, "+7(921) 855-0482");
         listContact.put(ContactType.SKYPE, "grigory.kislin");
         listContact.put(ContactType.EMAIL, "gkislin@yandex.ru");
@@ -27,19 +24,19 @@ public class MainResume {
         LocalDate date1 = LocalDate.of(2018, 5, 25);
         LocalDate date2 = LocalDate.now();
 
-        Map<String, Organization> listExperience = new HashMap<>();
+        List<Organization> listExperience = new ArrayList<>();
         Organization experience1 = new Organization("Java Online Projects", "https://www.Java.com", date1, date2, "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.");
-        listExperience.put(experience1.getName(), experience1);
+        listExperience.add(experience1);
         Organization experience2 = new Organization("Wrike", "https://www.Wrike.com", date1, date2, "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis).");
-        listExperience.put(experience2.getName(), experience2);
+        listExperience.add(experience2);
 
-        Map<String, Organization> listEducation = new HashMap<>();
-        Organization education1 = new Organization("Coursera", "https://www.Coursera.com", date1, date2, "", "\"Functional Programming Principles in Scala\" by Martin Odersky");
-        listEducation.put(education1.getName(), education1);
-        Organization education2 = new Organization("Luxoft", "https://www.Luxoft.com", date1, date2, "", "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"");
-        listEducation.put(education2.getName(), education2);
+        List<Organization> listEducation = new ArrayList<>();
+        Organization education1 = new Organization("Coursera", "https://www.Coursera.com", date1, date2, null, "\"Functional Programming Principles in Scala\" by Martin Odersky");
+        listEducation.add(education1);
+        Organization education2 = new Organization("Luxoft", "https://www.Luxoft.com", date1, date2, null, "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"");
+        listEducation.add(education2);
 
-        Map<SectionType, Section> listSection = new EnumMap<SectionType, Section>(SectionType.class);
+        Map<SectionType, Section> listSection = new EnumMap<>(SectionType.class);
         listSection.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         listSection.put(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
         listSection.put(SectionType.ACHIEVEMENT, new ListSection(Arrays.asList("С 2013 года: разработка проектов \"Разработка Web приложения\"", "Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike")));
