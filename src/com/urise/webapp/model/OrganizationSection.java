@@ -1,18 +1,25 @@
 package com.urise.webapp.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class OrganizationSection extends Section {
 
-    private List<Organization> list;
+    private final List<Organization> organizations;
 
-    public OrganizationSection(List<Organization> list) {
-        this.list = list;
+    public OrganizationSection(List<Organization> organizations) {
+        Objects.requireNonNull(organizations, "organizations must not be null");
+        this.organizations = organizations;
     }
 
+    public List<Organization> getOrganizations() {
+        return organizations;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Organization element : list) {
+        for (Organization element : organizations) {
             sb.append(element).append("\n");
         }
         sb.delete(sb.length() - 1, sb.length());
@@ -26,11 +33,11 @@ public class OrganizationSection extends Section {
 
         OrganizationSection that = (OrganizationSection) o;
 
-        return list != null ? list.equals(that.list) : that.list == null;
+        return organizations.equals(that.organizations);
     }
 
     @Override
     public int hashCode() {
-        return list != null ? list.hashCode() : 0;
+        return organizations.hashCode();
     }
 }

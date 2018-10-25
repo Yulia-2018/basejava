@@ -18,8 +18,8 @@ public class MainResume {
         listContact.put(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
         listContact.put(ContactType.GITHUB, "https://github.com/gkislin");
         listContact.put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/gkislin");
-        listContact.put(ContactType.HOMEPAGE, "http://gkislin.ru/");
-        resume.setContact(listContact);
+        listContact.put(ContactType.HOME_PAGE, "http://gkislin.ru/");
+        resume.setContacts(listContact);
 
         LocalDate date1 = LocalDate.of(2018, 5, 25);
         LocalDate date2 = LocalDate.now();
@@ -31,9 +31,9 @@ public class MainResume {
         listExperience.add(experience2);
 
         List<Organization> listEducation = new ArrayList<>();
-        Organization education1 = new Organization("Coursera", "https://www.Coursera.com", date1, date2, null, "\"Functional Programming Principles in Scala\" by Martin Odersky");
+        Organization education1 = new Organization("Coursera", "https://www.Coursera.com", date1, date2, "\"Functional Programming Principles in Scala\" by Martin Odersky", null);
         listEducation.add(education1);
-        Organization education2 = new Organization("Luxoft", "https://www.Luxoft.com", date1, date2, null, "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"");
+        Organization education2 = new Organization("Luxoft", "https://www.Luxoft.com", date1, date2, "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null);
         listEducation.add(education2);
 
         Map<SectionType, Section> listSection = new EnumMap<>(SectionType.class);
@@ -44,7 +44,7 @@ public class MainResume {
         listSection.put(SectionType.EXPERIENCE, new OrganizationSection(listExperience));
         listSection.put(SectionType.EDUCATION, new OrganizationSection(listEducation));
 
-        resume.setSection(listSection);
+        resume.setSections(listSection);
 
         System.out.println(resume.getFullName() + "\n");
 
