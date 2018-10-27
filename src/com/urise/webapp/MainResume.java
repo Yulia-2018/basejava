@@ -1,9 +1,11 @@
 package com.urise.webapp;
 
 import com.urise.webapp.model.*;
+import com.urise.webapp.util.DateUtil;
 
-import java.time.LocalDate;
 import java.util.*;
+
+import static java.time.Month.*;
 
 
 public class MainResume {
@@ -21,19 +23,32 @@ public class MainResume {
         listContact.put(ContactType.HOME_PAGE, "http://gkislin.ru/");
         resume.setContacts(listContact);
 
-        LocalDate date1 = LocalDate.of(2018, 5, 25);
-        LocalDate date2 = LocalDate.now();
-
         List<Organization> listExperience = new ArrayList<>();
-        Organization experience1 = new Organization("Java Online Projects", "https://www.Java.com", date1, date2, "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.");
+        Organization experience1 = new Organization(
+                "Java Online Projects",
+                "https://www.Java.com",
+                Arrays.asList(
+                        new BodyOrganization(DateUtil.of(2010, JANUARY), DateUtil.of(2013, OCTOBER), "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок."),
+                        new BodyOrganization(DateUtil.of(2014, NOVEMBER), DateUtil.of(2018, AUGUST), "Руководитель группы.", "Создание программного комплекса.")));
         listExperience.add(experience1);
-        Organization experience2 = new Organization("Wrike", "https://www.Wrike.com", date1, date2, "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis).");
+        Organization experience2 = new Organization(
+                "Wrike",
+                "https://www.Wrike.com",
+                Arrays.asList(new BodyOrganization(DateUtil.of(1998, JANUARY), DateUtil.of(1999, OCTOBER), "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis).")));
         listExperience.add(experience2);
 
         List<Organization> listEducation = new ArrayList<>();
-        Organization education1 = new Organization("Coursera", "https://www.Coursera.com", date1, date2, "\"Functional Programming Principles in Scala\" by Martin Odersky", null);
+        Organization education1 = new Organization(
+                "Coursera",
+                "https://www.Coursera.com",
+                Arrays.asList(new BodyOrganization(DateUtil.of(2000, MAY), DateUtil.of(2000, OCTOBER), "\"Functional Programming Principles in Scala\" by Martin Odersky", null)));
         listEducation.add(education1);
-        Organization education2 = new Organization("Luxoft", "https://www.Luxoft.com", date1, date2, "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null);
+        Organization education2 = new Organization(
+                "Luxoft",
+                "https://www.Luxoft.com",
+                Arrays.asList(
+                        new BodyOrganization(DateUtil.of(2000, MARCH), DateUtil.of(2000, OCTOBER), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null),
+                        new BodyOrganization(DateUtil.of(2005, MAY), DateUtil.of(2005, SEPTEMBER), "Курсы повышения квалификации", null)));
         listEducation.add(education2);
 
         Map<SectionType, Section> listSection = new EnumMap<>(SectionType.class);

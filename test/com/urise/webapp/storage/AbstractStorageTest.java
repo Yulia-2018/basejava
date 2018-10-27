@@ -1,5 +1,6 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
@@ -14,17 +15,18 @@ public abstract class AbstractStorageTest {
 
     protected Storage storage;
 
-    private static final String UUID_1 = "uuid1";
-    private static final String UUID_2 = "uuid2";
-    private static final String UUID_3 = "uuid3";
-    private static final String UUID_4 = "uuid4";
-
-    private static final Resume RESUME_1 = new Resume(UUID_1, "Petrov Maxim");
-    private static final Resume RESUME_2 = new Resume(UUID_2, "Inanov Dmitrii");
-    private static final Resume RESUME_3 = new Resume(UUID_3, "Petrov Maxim");
-    private static final Resume RESUME_4 = new Resume(UUID_4, "Inanov Petr");
+    private static final List<Resume> LIST_RESUME = ResumeTestData.createResume();
+    private static final Resume RESUME_1 = LIST_RESUME.get(0);
+    private static final Resume RESUME_2 = LIST_RESUME.get(1);
+    private static final Resume RESUME_3 = LIST_RESUME.get(2);
+    private static final Resume RESUME_4 = LIST_RESUME.get(3);
     // For method "update"
-    private static final Resume RESUME_5 = new Resume(UUID_1, "Sidorov Konstantin");
+    private static final Resume RESUME_5 = LIST_RESUME.get(4);
+
+    private static final String UUID_1 = RESUME_1.getUuid();
+    private static final String UUID_2 = RESUME_2.getUuid();
+    private static final String UUID_3 = RESUME_3.getUuid();
+    private static final String UUID_4 = RESUME_4.getUuid();
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
