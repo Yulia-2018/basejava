@@ -12,38 +12,39 @@ public abstract class AbstractStorage<SK> implements Storage {
 
     public static final Logger lOG = Logger.getLogger(AbstractStorage.class.getName());
 
-    private static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> {
-        if (o1.getFullName().compareTo(o2.getFullName()) != 0) {
-            return o1.getFullName().compareTo(o2.getFullName());
-        } else {
-            return o1.getUuid().compareTo(o2.getUuid());
-        }
-    };
+    private static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> o1.getFullName().compareTo(o2.getFullName()) != 0 ? o1.getFullName().compareTo(o2.getFullName()) : o1.getUuid().compareTo(o2.getUuid());
 
     public void update(Resume resume) {
-        lOG.info("Update" + resume);
+        lOG.info("Update " + resume);
         final String uuid = resume.getUuid();
         final SK searchKey = getExistedSearchKey(uuid);
-        updateObject(searchKey, resume);
+        doUpdate(searchKey, resume);
     }
 
     public void save(Resume resume) {
-        lOG.info("Save" + resume);
+        lOG.info("Save " + resume);
         final String uuid = resume.getUuid();
         final SK searchKey = getNotExistedSearchKey(uuid);
-        saveObject(searchKey, resume);
+        doSave(searchKey, resume);
     }
 
     public Resume get(String uuid) {
-        lOG.info("Get" + uuid);
+        lOG.info("Get " + uuid);
         final SK searchKey = getExistedSearchKey(uuid);
-        return getObject(searchKey);
+        return doGet(searchKey);
     }
 
     public void delete(String uuid) {
-        lOG.info("Delete" + uuid);
+        lOG.info("Delete " + uuid);
         final SK searchKey = getExistedSearchKey(uuid);
-        deleteObject(searchKey);
+        doDelete(searchKey);
+    }
+
+    public List<Resume> getAllSorted() {
+        lOG.info("GetAllSorted");
+        final List<Resume> resumeList = getListResume();
+        resumeList.sort(RESUME_COMPARATOR);
+        return resumeList;
     }
 
     private SK getNotExistedSearchKey(String uuid) {
@@ -66,22 +67,15 @@ public abstract class AbstractStorage<SK> implements Storage {
         return searchKey;
     }
 
-    public List<Resume> getAllSorted() {
-        lOG.info("GetAllSorted");
-        final List<Resume> resumeList = getListResume();
-        resumeList.sort(RESUME_COMPARATOR);
-        return resumeList;
-    }
-
     protected abstract List<Resume> getListResume();
 
-    protected abstract void updateObject(SK searchKey, Resume resume);
+    protected abstract void doUpdate(SK searchKey, Resume resume);
 
-    protected abstract void saveObject(SK searchKey, Resume resume);
+    protected abstract void doSave(SK searchKey, Resume resume);
 
-    protected abstract Resume getObject(SK searchKey);
+    protected abstract Resume doGet(SK searchKey);
 
-    protected abstract void deleteObject(SK searchKey);
+    protected abstract void doDelete(SK searchKey);
 
     protected abstract SK getSearchKey(String uuid);
 

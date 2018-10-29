@@ -41,7 +41,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected void updateObject(File file, Resume resume) {
+    protected void doUpdate(File file, Resume resume) {
         try {
             doWrite(file, resume);
         } catch (IOException e) {
@@ -50,7 +50,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected void saveObject(File file, Resume resume) {
+    protected void doSave(File file, Resume resume) {
         try {
             file.createNewFile();
             doWrite(file, resume);
@@ -60,7 +60,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected Resume getObject(File file) {
+    protected Resume doGet(File file) {
         try {
             return doRead(file);
         } catch (IOException e) {
@@ -69,7 +69,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected void deleteObject(File file) {
+    protected void doDelete(File file) {
         file.delete();
     }
 

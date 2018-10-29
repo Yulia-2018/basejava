@@ -51,7 +51,7 @@ public class MainResume {
                         new BodyOrganization(DateUtil.of(2005, MAY), DateUtil.of(2005, SEPTEMBER), "Курсы повышения квалификации", null)));
         listEducation.add(education2);
 
-        Map<SectionType, Section> listSection = new EnumMap<>(SectionType.class);
+        Map<SectionType, AbstractSection> listSection = new EnumMap<>(SectionType.class);
         listSection.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         listSection.put(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
         listSection.put(SectionType.ACHIEVEMENT, new ListSection(Arrays.asList("С 2013 года: разработка проектов \"Разработка Web приложения\"", "Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike")));

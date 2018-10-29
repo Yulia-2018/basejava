@@ -14,22 +14,22 @@ public class MapUuidStorage extends AbstractStorage<String> {
     }
 
     @Override
-    protected void updateObject(String uuid, Resume resume) {
+    protected void doUpdate(String uuid, Resume resume) {
         storage.replace(uuid, resume);
     }
 
     @Override
-    protected void saveObject(String uuid, Resume resume) {
+    protected void doSave(String uuid, Resume resume) {
         storage.put(uuid, resume);
     }
 
     @Override
-    protected Resume getObject(String uuid) {
+    protected Resume doGet(String uuid) {
         return storage.get(uuid);
     }
 
     @Override
-    protected void deleteObject(String uuid) {
+    protected void doDelete(String uuid) {
         storage.remove(uuid);
     }
 

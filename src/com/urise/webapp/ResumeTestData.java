@@ -50,7 +50,7 @@ public class ResumeTestData {
                 Arrays.asList(
                         new BodyOrganization(DateUtil.of(2013, NOVEMBER), DateUtil.of(2014, OCTOBER), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null))));
 
-        Map<SectionType, Section> listSection_1 = new EnumMap<>(SectionType.class);
+        Map<SectionType, AbstractSection> listSection_1 = new EnumMap<>(SectionType.class);
         listSection_1.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         listSection_1.put(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
         listSection_1.put(SectionType.ACHIEVEMENT, new ListSection(Arrays.asList("С 2013 года: разработка проектов \"Разработка Web приложения\"", "Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike")));
@@ -97,7 +97,7 @@ public class ResumeTestData {
                 Arrays.asList(
                         new BodyOrganization(DateUtil.of(1997, OCTOBER), DateUtil.of(1998, SEPTEMBER), "6 месяцев обучения цифровым телефонным сетям (Москва)", null))));
 
-        Map<SectionType, Section> listSection_2 = new EnumMap<>(SectionType.class);
+        Map<SectionType, AbstractSection> listSection_2 = new EnumMap<>(SectionType.class);
         listSection_2.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок"));
         listSection_2.put(SectionType.PERSONAL, new TextSection("Аналитический склад ума"));
         listSection_2.put(SectionType.ACHIEVEMENT, new ListSection(Arrays.asList("Налаживание процесса разработки и непрерывной интеграции ERP системы River BPM")));
@@ -139,7 +139,7 @@ public class ResumeTestData {
                 Arrays.asList(
                         new BodyOrganization(DateUtil.of(1993, DECEMBER), DateUtil.of(1996, JUNE), "Аспирантура (программист С, С++)", null))));
 
-        Map<SectionType, Section> listSection_3 = new EnumMap<>(SectionType.class);
+        Map<SectionType, AbstractSection> listSection_3 = new EnumMap<>(SectionType.class);
         listSection_3.put(SectionType.OBJECTIVE, new TextSection("Ведущий корпоративного обучения"));
         listSection_3.put(SectionType.PERSONAL, new TextSection("Сильная логика"));
         listSection_3.put(SectionType.ACHIEVEMENT, new ListSection(Arrays.asList("Реализация c нуля Rich Internet Application приложения на стеке технологий JPA", "Создание JavaEE фреймворка для отказоустойчивого взаимодействия слабо-связанных сервисов")));
@@ -186,7 +186,7 @@ public class ResumeTestData {
                 Arrays.asList(
                         new BodyOrganization(DateUtil.of(2003, OCTOBER), DateUtil.of(2008, DECEMBER), "Факультет информатики", null))));
 
-        Map<SectionType, Section> listSection_4 = new EnumMap<>(SectionType.class);
+        Map<SectionType, AbstractSection> listSection_4 = new EnumMap<>(SectionType.class);
         listSection_4.put(SectionType.OBJECTIVE, new TextSection("Разработчик"));
         listSection_4.put(SectionType.PERSONAL, new TextSection("Креативность, инициативность. Пурист кода и архитектуры."));
         listSection_4.put(SectionType.ACHIEVEMENT, new ListSection(Arrays.asList("Реализация протоколов по приему платежей всех основных платежных системы России", "Реализация онлайн клиента для администрирования и мониторинга системы по JMX (Jython/ Django)", "Организация онлайн стажировок и ведение проектов")));
@@ -239,7 +239,7 @@ public class ResumeTestData {
                         new BodyOrganization(DateUtil.of(2010, JUNE), DateUtil.of(2010, OCTOBER), "Курс по оптимизации", null),
                         new BodyOrganization(DateUtil.of(2005, MAY), DateUtil.of(2005, SEPTEMBER), "Курсы повышения квалификации", null))));
 
-        Map<SectionType, Section> listSection_5 = new EnumMap<>(SectionType.class);
+        Map<SectionType, AbstractSection> listSection_5 = new EnumMap<>(SectionType.class);
         listSection_5.put(SectionType.OBJECTIVE, new TextSection("Экономист"));
         listSection_5.put(SectionType.PERSONAL, new TextSection("Инициативность."));
         listSection_5.put(SectionType.ACHIEVEMENT, new ListSection(Arrays.asList("Удаленное взаимодействие (JMS/AKKA)", "Интеграция с Twilio, DuoSecurity, Google Authenticator, Jira, Zendesk", "Разработка SSO аутентификации и авторизации различных ERP модулей, интеграция CIFS/SMB java сервера")));
