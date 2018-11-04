@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class PathStorage extends AbstractStorage<Path> {
     private Path directory;
-    private Serializer serializer = new Serializer();
+    private SerializationStrategy serializationStrategy;
 
     protected PathStorage(String dir, SerializationStrategy serializationStrategy) {
         this.directory = Paths.get(dir);
@@ -21,7 +21,7 @@ public class PathStorage extends AbstractStorage<Path> {
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + " is not directory or is not writable");
         }
-        serializer.setSerializationStrategy(serializationStrategy);
+        this.serializationStrategy = serializationStrategy;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected void doUpdate(Path path, Resume resume) {
         try {
-            serializer.executeDoWrite(Files.newOutputStream(path), resume);
+            serializationStrategy.doWrite(Files.newOutputStream(path), resume);
         } catch (IOException e) {
             throw new StorageException("Path write error", resume.getUuid(), e);
         }
@@ -57,7 +57,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume doGet(Path path) {
         try {
-            return serializer.executeDoRead(Files.newInputStream(path));
+            return serializationStrategy.doRead(Files.newInputStream(path));
         } catch (IOException e) {
             throw new StorageException("Path read error", path.getFileName().toString(), e);
         }
