@@ -2,43 +2,41 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
+import com.urise.webapp.storage.serializer.StreamSerializer;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
     private Path directory;
-    private SerializationStrategy serializationStrategy;
+    private StreamSerializer streamSerializer;
 
-    protected PathStorage(String dir, SerializationStrategy serializationStrategy) {
+    protected PathStorage(String dir, StreamSerializer streamSerializer) {
+        Objects.requireNonNull(dir, "directory must not be null");
         this.directory = Paths.get(dir);
-        Objects.requireNonNull(directory, "directory must not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + " is not directory or is not writable");
         }
-        this.serializationStrategy = serializationStrategy;
+        this.streamSerializer = streamSerializer;
     }
 
     @Override
     protected List<Resume> getListResume() {
-        List<Resume> listResume = new ArrayList<>();
-        try {
-            Files.list(directory).forEach(path -> listResume.add(doGet(path)));
-        } catch (IOException e) {
-            throw new StorageException("Path read error", null, e);
-        }
-        return listResume;
+        return getFilesList().map(this::doGet).collect(Collectors.toList());
     }
 
     @Override
     protected void doUpdate(Path path, Resume resume) {
         try {
-            serializationStrategy.doWrite(Files.newOutputStream(path), resume);
+            streamSerializer.doWrite(new BufferedOutputStream(Files.newOutputStream(path)), resume);
         } catch (IOException e) {
             throw new StorageException("Path write error", resume.getUuid(), e);
         }
@@ -57,9 +55,9 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume doGet(Path path) {
         try {
-            return serializationStrategy.doRead(Files.newInputStream(path));
+            return streamSerializer.doRead(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
-            throw new StorageException("Path read error", path.getFileName().toString(), e);
+            throw new StorageException("Path read error", getFileName(path), e);
         }
     }
 
@@ -68,35 +66,39 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             Files.delete(path);
         } catch (IOException e) {
-            throw new StorageException("Path delete error", null, e);
+            throw new StorageException("Path delete error", getFileName(path), e);
         }
     }
 
     @Override
     protected Path getSearchKey(String uuid) {
-        return Paths.get(directory.toString(), uuid);
+        return directory.resolve(uuid);
     }
 
     @Override
     protected boolean isExist(Path path) {
-        return Files.exists(path);
+        return Files.isRegularFile(path);
     }
 
     @Override
     public void clear() {
-        try {
-            Files.list(directory).forEach(this::doDelete);
-        } catch (IOException e) {
-            throw new StorageException("Path delete error", null, e);
-        }
+        getFilesList().forEach(this::doDelete);
     }
 
     @Override
     public int size() {
+        return (int) getFilesList().count();
+    }
+
+    private String getFileName(Path path) {
+        return path.getFileName().toString();
+    }
+
+    private Stream<Path> getFilesList() {
         try {
-            return Files.list(directory).toArray().length;
+            return Files.list(directory);
         } catch (IOException e) {
-            throw new StorageException("Path sizing error", null, e);
+            throw new StorageException("Directory read error", e);
         }
     }
 }
