@@ -19,45 +19,67 @@ public class DataStreamSerializer implements StreamSerializer {
             final Map<ContactType, String> contacts = resume.getContacts();
             dos.writeInt(contacts.size());
             contacts.forEach((type, s) -> {
-                write(dos, type.name());
-                write(dos, s);
+                try {
+                    dos.writeUTF(type.name());
+                    dos.writeUTF(s);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
 
             final Map<SectionType, AbstractSection> sections = resume.getSections();
             dos.writeInt(sections.size());
             sections.forEach((type, abstractSection) -> {
-                write(dos, type.name());
-                switch (type) {
-                    case OBJECTIVE:
-                    case PERSONAL:
-                        final TextSection textSection = (TextSection) resume.getSection(type);
-                        write(dos, textSection.getContent());
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
-                        final ListSection listSection = (ListSection) resume.getSection(type);
-                        final List<String> items = listSection.getItems();
-                        write(dos, items.size());
-                        items.forEach(s -> write(dos, s));
-                        break;
-                    case EXPERIENCE:
-                    case EDUCATION:
-                        final OrganizationSection organizationSection = (OrganizationSection) resume.getSection(type);
-                        final List<Organization> organizations = organizationSection.getOrganizations();
-                        write(dos, organizations.size());
-                        organizations.forEach(organization -> {
-                            write(dos, organization.getHomePage().getName());
-                            writeNotRequiredFields(dos, organization.getHomePage().getUrl());
-                            final List<Organization.Position> positions = organization.getPositions();
-                            write(dos, positions.size());
-                            positions.forEach(position -> {
-                                write(dos, position.getStartDate().toString());
-                                write(dos, position.getEndDate().toString());
-                                write(dos, position.getTitle());
-                                writeNotRequiredFields(dos, position.getDescription());
+                try {
+                    dos.writeUTF(type.name());
+                    switch (type) {
+                        case OBJECTIVE:
+                        case PERSONAL:
+                            final TextSection textSection = (TextSection) resume.getSection(type);
+                            dos.writeUTF(textSection.getContent());
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            final ListSection listSection = (ListSection) resume.getSection(type);
+                            final List<String> items = listSection.getItems();
+                            dos.writeInt(items.size());
+                            items.forEach(s -> {
+                                try {
+                                    dos.writeUTF(s);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             });
-                        });
-                        break;
+                            break;
+                        case EXPERIENCE:
+                        case EDUCATION:
+                            final OrganizationSection organizationSection = (OrganizationSection) resume.getSection(type);
+                            final List<Organization> organizations = organizationSection.getOrganizations();
+                            dos.writeInt(organizations.size());
+                            organizations.forEach(organization -> {
+                                try {
+                                    dos.writeUTF(organization.getHomePage().getName());
+                                    writeNotRequiredFields(dos, organization.getHomePage().getUrl());
+                                    final List<Organization.Position> positions = organization.getPositions();
+                                    dos.writeInt(positions.size());
+                                    positions.forEach(position -> {
+                                        try {
+                                            dos.writeUTF(position.getStartDate().toString());
+                                            dos.writeUTF(position.getEndDate().toString());
+                                            dos.writeUTF(position.getTitle());
+                                            writeNotRequiredFields(dos, position.getDescription());
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    });
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                            break;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             });
         }
@@ -113,11 +135,11 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void writeNotRequiredFields(DataOutputStream dos, String value) {
+    private void writeNotRequiredFields(DataOutputStream dos, String value) throws IOException {
         if (value == null) {
-            write(dos, NULL_HOLDER);
+            dos.writeUTF(NULL_HOLDER);
         } else {
-            write(dos, value);
+            dos.writeUTF(value);
         }
     }
 
@@ -127,17 +149,5 @@ public class DataStreamSerializer implements StreamSerializer {
             value = null;
         }
         return value;
-    }
-
-    private void write(DataOutputStream dos, Object value) {
-        try {
-            if (value instanceof String) {
-                dos.writeUTF((String) value);
-            } else if (value instanceof Integer) {
-                dos.writeInt((int) value);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
