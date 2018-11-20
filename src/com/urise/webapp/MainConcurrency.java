@@ -7,6 +7,8 @@ public class MainConcurrency {
     private static int counter = 0;
 
     public static final int THREAD_NUMBER = 10000;
+    private static final MainConcurrency mainConcurrency1 = new MainConcurrency();
+    private static final MainConcurrency mainConcurrency2 = new MainConcurrency();
 
     public static void main(String[] args) throws InterruptedException {
         System.out.println(Thread.currentThread().getName() + " " + Thread.currentThread().getState());
@@ -44,16 +46,12 @@ public class MainConcurrency {
 
         // deadlock
         counter = 0;
-        MainConcurrency mainConcurrency1 = new MainConcurrency();
-        MainConcurrency mainConcurrency2 = new MainConcurrency();
         final Thread thread1 = new Thread(() -> {
             mainConcurrency1.inc();
-            mainConcurrency2.dec();
         });
         thread1.start();
         final Thread thread2 = new Thread(() -> {
             mainConcurrency2.dec();
-            mainConcurrency1.inc();
         });
         thread2.start();
         thread1.join();
@@ -72,10 +70,12 @@ public class MainConcurrency {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        mainConcurrency2.dec();
     }
 
     private synchronized void dec() {
         counter--;
         notify();
+        mainConcurrency1.inc();
     }
 }
