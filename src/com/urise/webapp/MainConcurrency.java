@@ -46,13 +46,9 @@ public class MainConcurrency {
 
         // deadlock
         counter = 0;
-        final Thread thread1 = new Thread(() -> {
-            mainConcurrency1.inc();
-        });
+        final Thread thread1 = new Thread(mainConcurrency1::inc);
         thread1.start();
-        final Thread thread2 = new Thread(() -> {
-            mainConcurrency2.dec();
-        });
+        final Thread thread2 = new Thread(mainConcurrency2::dec);
         thread2.start();
         thread1.join();
         thread2.join();
@@ -75,7 +71,9 @@ public class MainConcurrency {
 
     private synchronized void dec() {
         counter--;
-        notify();
+        synchronized (mainConcurrency1) {
+            mainConcurrency1.notify();
+        }
         mainConcurrency1.inc();
     }
 }
