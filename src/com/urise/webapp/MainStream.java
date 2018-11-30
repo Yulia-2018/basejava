@@ -34,7 +34,7 @@ public class MainStream {
                         System.out.println(minValue(values));
                         System.out.println(oddOrEven(integers));
                     } catch (NumberFormatException e) {
-                        System.out.println("Неверное число в массиве, вводите числовые значения через пробел : " + e);
+                        System.out.println("Неверное число в массиве, вводите числовые значения через пробел: " + e);
                     }
                     break;
                 default:
@@ -45,18 +45,19 @@ public class MainStream {
     }
 
     private static int minValue(int[] values) {
-        //System.out.println(Arrays.stream(values).distinct().sorted().mapToObj(String::valueOf).collect(Collectors.joining()));
-        final int[] array = Arrays.stream(values).distinct().sorted().toArray();
-        final int length = array.length;
-        return IntStream.range(0, length).map(i -> (int) (array[i] * Math.pow(10, length - i - 1))).sum();
+        return Arrays.stream(values).distinct().sorted().reduce(0, (acc, x) -> acc * 10 + x);
     }
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
         final Integer reduce = integers.stream().reduce(0, (a, b) -> a + b);
-        if (reduce % 2 == 0) {
-            return integers.stream().filter(x -> x % 2 != 0).collect(Collectors.toList());
-        } else {
-            return integers.stream().filter(x -> x % 2 == 0).collect(Collectors.toList());
-        }
+        return integers.stream()
+                .filter(x -> {
+                    if (reduce % 2 == 0) {
+                        return x % 2 != 0;
+                    } else {
+                        return x % 2 == 0;
+                    }
+                })
+                .collect(Collectors.toList());
     }
 }
