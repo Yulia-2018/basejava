@@ -50,14 +50,6 @@ public class MainStream {
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
         final Integer reduce = integers.stream().reduce(0, (a, b) -> a + b);
-        return integers.stream()
-                .filter(x -> {
-                    if (reduce % 2 == 0) {
-                        return x % 2 != 0;
-                    } else {
-                        return x % 2 == 0;
-                    }
-                })
-                .collect(Collectors.toList());
+        return integers.stream().filter(x -> x % 2 != reduce % 2).collect(Collectors.toList());
     }
 }
