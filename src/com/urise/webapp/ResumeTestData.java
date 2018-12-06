@@ -1,11 +1,9 @@
 package com.urise.webapp;
 
-import com.urise.webapp.model.*;
-import com.urise.webapp.util.DateUtil;
+import com.urise.webapp.model.Resume;
 
-import java.util.*;
-
-import static java.time.Month.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResumeTestData {
     public static List<Resume> createResume() {
@@ -15,7 +13,7 @@ public class ResumeTestData {
         // resume_1
         final Resume resume_1 = new Resume("uuid1", "Petrov Maxim");
 
-        resume_1.addContact(ContactType.PHONE, "+7(921) 855-0482");
+        /*resume_1.addContact(ContactType.PHONE, "+7(921) 855-0482");
         resume_1.addContact(ContactType.SKYPE, "Max.Petrov");
         resume_1.addContact(ContactType.EMAIL, "MaxPetrov@yandex.ru");
         resume_1.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/MaxPetrov");
@@ -50,11 +48,11 @@ public class ResumeTestData {
         resume_1.addSection(SectionType.QUALIFICATIONS, new ListSection("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2", "Version control: Subversion, Git, Mercury, ClearCase, Perforce"));
         resume_1.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience_1));
         resume_1.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_1));
-
+*/
         // resume_2
         final Resume resume_2 = new Resume("uuid2", "Inanov Dmitrii");
 
-        resume_2.addContact(ContactType.PHONE, "+7(921) 840-0472");
+        /*resume_2.addContact(ContactType.PHONE, "+7(921) 840-0472");
         resume_2.addContact(ContactType.SKYPE, "Dmitrii.Inanov");
         resume_2.addContact(ContactType.EMAIL, "DInanov@yandex.ru");
         resume_2.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/DInanov");
@@ -88,11 +86,11 @@ public class ResumeTestData {
         resume_2.addSection(SectionType.QUALIFICATIONS, new ListSection("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle", "MySQL, SQLite, MS SQL, HSQLDB"));
         resume_2.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience_2));
         resume_2.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_2));
-
+*/
         // resume_3
         final Resume resume_3 = new Resume("uuid3", "Petrov Maxim");
 
-        resume_2.addContact(ContactType.PHONE, "+7(921) 875-0262");
+        /*resume_2.addContact(ContactType.PHONE, "+7(921) 875-0262");
         resume_2.addContact(ContactType.SKYPE, "Maxim.Petrov");
         resume_3.addContact(ContactType.EMAIL, "MPetrov@yandex.ru");
         resume_3.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/MPetrov");
@@ -122,11 +120,11 @@ public class ResumeTestData {
         resume_3.addSection(SectionType.QUALIFICATIONS, new ListSection("Languages: Java, Scala, Python/Jython/PL-Python, JavaScript, Groovy", "XML/XSD/XSLT, SQL, C/C++, Unix shell scripts", "Java Frameworks: Java 8 (Time API, Streams), Guava, Java Executor, MyBatis, Spring (MVC, Security, Data, Clouds, Boot)"));
         resume_3.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience_3));
         resume_3.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_3));
-
+*/
         // resume_4
         final Resume resume_4 = new Resume("uuid4", "Inanov Petr");
 
-        resume_4.addContact(ContactType.PHONE, "+7(921) 875-0488");
+        /*resume_4.addContact(ContactType.PHONE, "+7(921) 875-0488");
         resume_4.addContact(ContactType.SKYPE, "Petr.Inanov");
         resume_4.addContact(ContactType.EMAIL, "PInanov@yandex.ru");
         resume_4.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/PInanov");
@@ -159,12 +157,12 @@ public class ResumeTestData {
         resume_4.addSection(SectionType.ACHIEVEMENT, new ListSection("Реализация протоколов по приему платежей всех основных платежных системы России", "Реализация онлайн клиента для администрирования и мониторинга системы по JMX (Jython/ Django)", "Организация онлайн стажировок и ведение проектов"));
         resume_4.addSection(SectionType.QUALIFICATIONS, new ListSection("Python: Django", "JavaScript: jQuery, ExtJS, Bootstrap.js, underscore.js", "Scala: SBT, Play2, Specs2, Anorm, Spray, Akka"));
         resume_4.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience_4));
-        resume_4.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_4));
+        resume_4.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_4));*/
 
         // resume_5, For method "update"
         final Resume resume_5 = new Resume("uuid1", "Sidorov Konstantin");
 
-        resume_5.addContact(ContactType.PHONE, "+7(921) 825-0432");
+        /*resume_5.addContact(ContactType.PHONE, "+7(921) 825-0432");
         resume_5.addContact(ContactType.SKYPE, "Konstantin.Sidorov");
         resume_5.addContact(ContactType.EMAIL, "KSidorov@yandex.ru");
         resume_5.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/KSidorov");
@@ -203,7 +201,7 @@ public class ResumeTestData {
         resume_5.addSection(SectionType.QUALIFICATIONS, new ListSection("Технологии: Servlet, JSP/JSTL, JAX-WS, REST, EJB, RMI, JMS"));
         resume_5.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience_5));
         resume_5.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_5));
-
+*/
         listResume.add(resume_1);
         listResume.add(resume_2);
         listResume.add(resume_3);
