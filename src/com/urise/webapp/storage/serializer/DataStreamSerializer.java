@@ -1,16 +1,13 @@
 package com.urise.webapp.storage.serializer;
 
 import com.urise.webapp.model.*;
-import com.urise.webapp.storage.serializer.ThrowingInterface.ThrowingBiConsumer;
-import com.urise.webapp.storage.serializer.ThrowingInterface.ThrowingConsumer;
-import com.urise.webapp.storage.serializer.ThrowingInterface.ThrowingIntConsumer;
 
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 public class DataStreamSerializer implements StreamSerializer {
     @Override
@@ -19,15 +16,15 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
             final Map<ContactType, String> contacts = resume.getContacts();
-            dos.writeInt(contacts.size());
-            contacts.forEach((ThrowingBiConsumer<ContactType, String>) (type, s) -> {
-                dos.writeUTF(type.name());
-                dos.writeUTF(s);
+            writeCollection(dos, contacts.entrySet(), entry -> {
+                dos.writeUTF(entry.getKey().name());
+                dos.writeUTF(entry.getValue());
             });
 
             final Map<SectionType, AbstractSection> sections = resume.getSections();
             dos.writeInt(sections.size());
-            sections.forEach((ThrowingBiConsumer<SectionType, AbstractSection>) (type, abstractSection) -> {
+            for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
+                final SectionType type = entry.getKey();
                 dos.writeUTF(type.name());
                 switch (type) {
                     case OBJECTIVE:
@@ -39,29 +36,26 @@ public class DataStreamSerializer implements StreamSerializer {
                     case QUALIFICATIONS:
                         final ListSection listSection = (ListSection) resume.getSection(type);
                         final List<String> items = listSection.getItems();
-                        dos.writeInt(items.size());
-                        items.forEach((ThrowingConsumer<String>) dos::writeUTF);
+                        writeCollection(dos, items, dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
                         final OrganizationSection organizationSection = (OrganizationSection) resume.getSection(type);
                         final List<Organization> organizations = organizationSection.getOrganizations();
-                        dos.writeInt(organizations.size());
-                        organizations.forEach((ThrowingConsumer<Organization>) organization -> {
+                        writeCollection(dos, organizations, organization -> {
                             dos.writeUTF(organization.getHomePage().getName());
                             dos.writeUTF(organization.getHomePage().getUrl());
                             final List<Organization.Position> positions = organization.getPositions();
-                            dos.writeInt(positions.size());
-                            positions.forEach((ThrowingConsumer<Organization.Position>) position -> {
-                                dos.writeUTF(position.getStartDate().toString());
-                                dos.writeUTF(position.getEndDate().toString());
+                            writeCollection(dos, positions, position -> {
+                                writeDate(dos, position.getStartDate());
+                                writeDate(dos, position.getEndDate());
                                 dos.writeUTF(position.getTitle());
                                 dos.writeUTF(position.getDescription());
                             });
                         });
                         break;
                 }
-            });
+            }
         }
     }
 
@@ -71,11 +65,9 @@ public class DataStreamSerializer implements StreamSerializer {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            int sizeContacts = dis.readInt();
-            IntStream.range(0, sizeContacts).forEach((ThrowingIntConsumer) value -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+            readCollection(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
 
-            int sizeSections = dis.readInt();
-            IntStream.range(0, sizeSections).forEach((ThrowingIntConsumer) value -> {
+            readCollection(dis, () -> {
                 final SectionType sectionType = SectionType.valueOf(dis.readUTF());
                 switch (sectionType) {
                     case OBJECTIVE:
@@ -84,21 +76,22 @@ public class DataStreamSerializer implements StreamSerializer {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        int sizeList = dis.readInt();
                         final List<String> list = new ArrayList<>();
-                        IntStream.range(0, sizeList).forEach((ThrowingIntConsumer) value1 -> list.add(dis.readUTF()));
+                        readCollection(dis, () -> list.add(dis.readUTF()));
                         resume.addSection(sectionType, new ListSection(list));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        int sizeOrganization = dis.readInt();
                         final List<Organization> listOrganization = new ArrayList<>();
-                        IntStream.range(0, sizeOrganization).forEach((ThrowingIntConsumer) value1 -> {
+                        readCollection(dis, () -> {
                             String name = dis.readUTF();
                             String url = dis.readUTF();
                             final List<Organization.Position> listPosition = new ArrayList<>();
-                            int sizePosition = dis.readInt();
-                            IntStream.range(0, sizePosition).forEach((ThrowingIntConsumer) value2 -> listPosition.add(new Organization.Position(LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF()), dis.readUTF(), dis.readUTF())));
+                            readCollection(dis, () -> listPosition.add(new Organization.Position(
+                                    readDate(dis.readInt(), dis.readInt(), dis.readInt()),
+                                    readDate(dis.readInt(), dis.readInt(), dis.readInt()),
+                                    dis.readUTF(),
+                                    dis.readUTF())));
                             listOrganization.add(new Organization(new Link(name, url), listPosition));
                         });
                         resume.addSection(sectionType, new OrganizationSection(listOrganization));
@@ -107,5 +100,37 @@ public class DataStreamSerializer implements StreamSerializer {
             });
             return resume;
         }
+    }
+
+    private interface ReadElement {
+        void read() throws IOException;
+    }
+
+    private void readCollection(DataInputStream dis, ReadElement readElement) throws IOException {
+        int size = dis.readInt();
+        for (int k = 0; k < size; k++) {
+            readElement.read();
+        }
+    }
+
+    private interface WriteElement<T> {
+        void write(T element) throws IOException;
+    }
+
+    private <T> void writeCollection(DataOutputStream dos, Collection<T> collection, WriteElement<T> writeElement) throws IOException {
+        dos.writeInt(collection.size());
+        for (T element : collection) {
+            writeElement.write(element);
+        }
+    }
+
+    private void writeDate(DataOutputStream dos, LocalDate localDate) throws IOException {
+        dos.writeInt(localDate.getYear());
+        dos.writeInt(localDate.getMonth().getValue());
+        dos.writeInt(1);
+    }
+
+    private LocalDate readDate(int year, int month, int day) {
+        return LocalDate.of(year, month, day);
     }
 }
