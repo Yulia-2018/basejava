@@ -1,7 +1,6 @@
-package com.urise.webapp.util;
+package com.urise.webapp.sql;
 
 import com.urise.webapp.exception.StorageException;
-import com.urise.webapp.sql.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,11 +14,11 @@ public class SqlHelper {
         this.connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
-    public interface ExecutionProcess {
-        Object process(PreparedStatement ps) throws SQLException;
+    public interface ExecutionProcess<T> {
+        T process(PreparedStatement ps) throws SQLException;
     }
 
-    public Object sqlExecute(String sql, ExecutionProcess executionProcess) {
+    public <T> T sqlExecute(String sql, ExecutionProcess<T> executionProcess) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             return executionProcess.process(ps);

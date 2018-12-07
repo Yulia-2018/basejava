@@ -3,20 +3,18 @@ package com.urise.webapp.storage;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
-import com.urise.webapp.util.SqlHelper;
+import com.urise.webapp.sql.SqlHelper;
 import org.postgresql.util.PSQLException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
     private static final Logger lOG = Logger.getLogger(SqlStorage.class.getName());
-    private static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> o1.getFullName().compareTo(o2.getFullName()) != 0 ? o1.getFullName().compareTo(o2.getFullName()) : o1.getUuid().compareTo(o2.getUuid());
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
         this.sqlHelper = new SqlHelper(dbUrl, dbUser, dbPassword);
@@ -50,8 +48,10 @@ public class SqlStorage implements Storage {
                 ps.setString(2, resume.getFullName());
                 ps.execute();
             } catch (PSQLException e) {
-                lOG.warning("Resume " + resume.getUuid() + " already exist");
-                throw new ExistStorageException(resume.getUuid());
+                if (e.getSQLState().equals("23505")) {
+                    lOG.warning("Resume " + resume.getUuid() + " already exist");
+                    throw new ExistStorageException(resume.getUuid());
+                }
             }
             return null;
         });
@@ -60,7 +60,7 @@ public class SqlStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         lOG.info("Get " + uuid);
-        return (Resume) sqlHelper.sqlExecute("SELECT * FROM resume r WHERE r.uuid = ?", ps -> {
+        return sqlHelper.sqlExecute("SELECT * FROM resume r WHERE r.uuid = ?", ps -> {
             ps.setString(1, uuid);
             ResultSet rs = ps.executeQuery();
             if (!rs.next()) {
@@ -87,20 +87,19 @@ public class SqlStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
         lOG.info("GetAllSorted");
-        return (List<Resume>) sqlHelper.sqlExecute("SELECT trim(uuid) AS uuid, full_name FROM resume r", ps -> {
+        return sqlHelper.sqlExecute("SELECT trim(uuid) AS uuid, full_name FROM resume r ORDER BY full_name, uuid", ps -> {
             List<Resume> resumes = new ArrayList<>();
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 resumes.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
             }
-            resumes.sort(RESUME_COMPARATOR);
             return resumes;
         });
     }
 
     @Override
     public int size() {
-        return (int) sqlHelper.sqlExecute("SELECT COUNT(*) AS cnt FROM resume r", ps -> {
+        return sqlHelper.sqlExecute("SELECT COUNT(*) AS cnt FROM resume r", ps -> {
             ResultSet rs = ps.executeQuery();
             rs.next();
             return rs.getInt("cnt");
