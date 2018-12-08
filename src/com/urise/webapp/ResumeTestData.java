@@ -4,6 +4,7 @@ import com.urise.webapp.model.Resume;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ResumeTestData {
     public static List<Resume> createResume() {
@@ -11,7 +12,7 @@ public class ResumeTestData {
         List<Resume> listResume = new ArrayList<>();
 
         // resume_1
-        final Resume resume_1 = new Resume("uuid1", "Petrov Maxim");
+        final Resume resume_1 = new Resume(UUID.randomUUID().toString(), "Petrov Maxim");
 
         /*resume_1.addContact(ContactType.PHONE, "+7(921) 855-0482");
         resume_1.addContact(ContactType.SKYPE, "Max.Petrov");
@@ -50,7 +51,7 @@ public class ResumeTestData {
         resume_1.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_1));
 */
         // resume_2
-        final Resume resume_2 = new Resume("uuid2", "Inanov Dmitrii");
+        final Resume resume_2 = new Resume(UUID.randomUUID().toString(), "Inanov Dmitrii");
 
         /*resume_2.addContact(ContactType.PHONE, "+7(921) 840-0472");
         resume_2.addContact(ContactType.SKYPE, "Dmitrii.Inanov");
@@ -88,7 +89,7 @@ public class ResumeTestData {
         resume_2.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_2));
 */
         // resume_3
-        final Resume resume_3 = new Resume("uuid3", "Petrov Maxim");
+        final Resume resume_3 = new Resume(UUID.randomUUID().toString(), "Petrov Maxim");
 
         /*resume_2.addContact(ContactType.PHONE, "+7(921) 875-0262");
         resume_2.addContact(ContactType.SKYPE, "Maxim.Petrov");
@@ -122,7 +123,7 @@ public class ResumeTestData {
         resume_3.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_3));
 */
         // resume_4
-        final Resume resume_4 = new Resume("uuid4", "Inanov Petr");
+        final Resume resume_4 = new Resume(UUID.randomUUID().toString(), "Inanov Petr");
 
         /*resume_4.addContact(ContactType.PHONE, "+7(921) 875-0488");
         resume_4.addContact(ContactType.SKYPE, "Petr.Inanov");
@@ -160,7 +161,7 @@ public class ResumeTestData {
         resume_4.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_4));*/
 
         // resume_5, For method "update"
-        final Resume resume_5 = new Resume("uuid1", "Sidorov Konstantin");
+        final Resume resume_5 = new Resume(resume_1.getUuid(), "Sidorov Konstantin");
 
         /*resume_5.addContact(ContactType.PHONE, "+7(921) 825-0432");
         resume_5.addContact(ContactType.SKYPE, "Konstantin.Sidorov");
