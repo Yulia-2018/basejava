@@ -1,5 +1,6 @@
 package com.urise.webapp;
 
+import com.urise.webapp.model.ContactType;
 import com.urise.webapp.model.Resume;
 
 import java.util.ArrayList;
@@ -20,9 +21,9 @@ public class ResumeTestData {
         resume_1.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/MaxPetrov");
         resume_1.addContact(ContactType.GITHUB, "https://github.com/MaxPetrov");
         resume_1.addContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/MaxPetrov");
-        resume_1.addContact(ContactType.HOME_PAGE, "http://MaxPetrov.ru/");
+        resume_1.addContact(ContactType.HOME_PAGE, "http://MaxPetrov.ru/");*/
 
-        List<Organization> listExperience_1 = new ArrayList<>();
+        /*List<Organization> listExperience_1 = new ArrayList<>();
         listExperience_1.add(new Organization(
                 "Java Online Projects",
                 "https://www.Java.com",
@@ -53,7 +54,7 @@ public class ResumeTestData {
         // resume_2
         final Resume resume_2 = new Resume(UUID.randomUUID().toString(), "Inanov Dmitrii");
 
-        /*resume_2.addContact(ContactType.PHONE, "+7(921) 840-0472");
+        resume_2.addContact(ContactType.PHONE, "+7(921) 840-0472");
         resume_2.addContact(ContactType.SKYPE, "Dmitrii.Inanov");
         resume_2.addContact(ContactType.EMAIL, "DInanov@yandex.ru");
         resume_2.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/DInanov");
@@ -61,7 +62,7 @@ public class ResumeTestData {
         resume_2.addContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/DInanov");
         resume_2.addContact(ContactType.HOME_PAGE, "http://DInanov.ru/");
 
-        List<Organization> listExperience_2 = new ArrayList<>();
+        /*List<Organization> listExperience_2 = new ArrayList<>();
         listExperience_2.add(new Organization(
                 "RIT Center",
                 null,
@@ -89,17 +90,17 @@ public class ResumeTestData {
         resume_2.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_2));
 */
         // resume_3
-        final Resume resume_3 = new Resume(UUID.randomUUID().toString(), "Petrov Maxim");
+        final Resume resume_3 = new Resume(UUID.randomUUID().toString(), "Petrova Raisa");
 
-        /*resume_2.addContact(ContactType.PHONE, "+7(921) 875-0262");
-        resume_2.addContact(ContactType.SKYPE, "Maxim.Petrov");
+        resume_3.addContact(ContactType.PHONE, "+7(921) 875-0262");
+        resume_3.addContact(ContactType.SKYPE, "Maxim.Petrov");
         resume_3.addContact(ContactType.EMAIL, "MPetrov@yandex.ru");
         resume_3.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/MPetrov");
         resume_3.addContact(ContactType.GITHUB, "https://github.com/MPetrov");
         resume_3.addContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/MPetrov");
         resume_3.addContact(ContactType.HOME_PAGE, "http://MPetrov.ru/");
 
-        List<Organization> listExperience_3 = new ArrayList<>();
+        /*List<Organization> listExperience_3 = new ArrayList<>();
         listExperience_3.add(new Organization(
                 "Yota",
                 "https://www.yota.ru/",
@@ -125,7 +126,7 @@ public class ResumeTestData {
         // resume_4
         final Resume resume_4 = new Resume(UUID.randomUUID().toString(), "Inanov Petr");
 
-        /*resume_4.addContact(ContactType.PHONE, "+7(921) 875-0488");
+        resume_4.addContact(ContactType.PHONE, "+7(921) 875-0488");
         resume_4.addContact(ContactType.SKYPE, "Petr.Inanov");
         resume_4.addContact(ContactType.EMAIL, "PInanov@yandex.ru");
         resume_4.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/PInanov");
@@ -133,7 +134,7 @@ public class ResumeTestData {
         resume_4.addContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/PInanov");
         resume_4.addContact(ContactType.HOME_PAGE, "http://PInanov.ru/");
 
-        List<Organization> listExperience_4 = new ArrayList<>();
+        /*List<Organization> listExperience_4 = new ArrayList<>();
         listExperience_4.add(new Organization(
                 "Siemens AG",
                 "https://www.siemens.com/ru/ru/home.html",
@@ -163,7 +164,7 @@ public class ResumeTestData {
         // resume_5, For method "update"
         final Resume resume_5 = new Resume(resume_1.getUuid(), "Sidorov Konstantin");
 
-        /*resume_5.addContact(ContactType.PHONE, "+7(921) 825-0432");
+        resume_5.addContact(ContactType.PHONE, "+7(921) 825-0432");
         resume_5.addContact(ContactType.SKYPE, "Konstantin.Sidorov");
         resume_5.addContact(ContactType.EMAIL, "KSidorov@yandex.ru");
         resume_5.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/KSidorov");
@@ -171,7 +172,7 @@ public class ResumeTestData {
         resume_5.addContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/KSidorov");
         resume_5.addContact(ContactType.HOME_PAGE, "http://KSidorov.ru/");
 
-        List<Organization> listExperience_5 = new ArrayList<>();
+        /*List<Organization> listExperience_5 = new ArrayList<>();
         listExperience_5.add(new Organization(
                 "Yota",
                 null,
