@@ -112,9 +112,9 @@ public class SqlStorage implements Storage {
             try (PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM resume r ORDER BY full_name, uuid");
                  PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM contact c")) {
                 ResultSet rs1 = ps1.executeQuery();
-                ResultSet rs2 = ps2.executeQuery();
                 while (rs1.next()) {
                     Resume resume = new Resume(rs1.getString("uuid"), rs1.getString("full_name"));
+                    ResultSet rs2 = ps2.executeQuery();
                     while (rs2.next()) {
                         if (rs1.getString("uuid").equals(rs2.getString("resume_uuid"))) {
                             addContact(resume, rs2);
