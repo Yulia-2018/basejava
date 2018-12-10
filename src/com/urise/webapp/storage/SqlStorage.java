@@ -92,7 +92,7 @@ public class SqlStorage implements Storage {
     public List<Resume> getAllSorted() {
         lOG.info("GetAllSorted");
         List<Resume> resumes = new ArrayList<>();
-        sqlHelper.sqlTransactionalExecute(conn -> {
+        /*sqlHelper.sqlTransactionalExecute(conn -> {
             try (PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM resume r ORDER BY full_name, uuid");
                  PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM contact c WHERE c.resume_uuid = ?")) {
                 ResultSet rs1 = ps1.executeQuery();
@@ -102,6 +102,23 @@ public class SqlStorage implements Storage {
                     ResultSet rs2 = ps2.executeQuery();
                     while (rs2.next()) {
                         addContact(resume, rs2);
+                    }
+                    resumes.add(resume);
+                }
+            }
+            return null;
+        });*/
+        sqlHelper.sqlTransactionalExecute(conn -> {
+            try (PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM resume r ORDER BY full_name, uuid");
+                 PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM contact c")) {
+                ResultSet rs1 = ps1.executeQuery();
+                ResultSet rs2 = ps2.executeQuery();
+                while (rs1.next()) {
+                    Resume resume = new Resume(rs1.getString("uuid"), rs1.getString("full_name"));
+                    while (rs2.next()) {
+                        if (rs1.getString("uuid").equals(rs2.getString("resume_uuid"))) {
+                            addContact(resume, rs2);
+                        }
                     }
                     resumes.add(resume);
                 }
