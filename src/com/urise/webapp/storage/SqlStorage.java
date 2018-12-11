@@ -6,15 +6,13 @@ import com.urise.webapp.model.Resume;
 import com.urise.webapp.sql.SqlHelper;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
     private static final Logger lOG = Logger.getLogger(SqlStorage.class.getName());
+    private static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> o1.getFullName().compareTo(o2.getFullName()) != 0 ? o1.getFullName().compareTo(o2.getFullName()) : o1.getUuid().compareTo(o2.getUuid());
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
         this.sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
@@ -92,33 +90,26 @@ public class SqlStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
         lOG.info("GetAllSorted");
-        List<Resume> resumes = new ArrayList<>();
+        Map<String, Resume> mapResume = new HashMap<>();
         sqlHelper.sqlTransactionalExecute(conn -> {
-            try (PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM resume r ORDER BY full_name, uuid");
+            try (PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM resume r");
                  PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM contact c")) {
                 ResultSet rs1 = ps1.executeQuery();
                 while (rs1.next()) {
-                    Resume resume = new Resume(rs1.getString("uuid"), rs1.getString("full_name"));
-                    resumes.add(resume);
+                    mapResume.put(rs1.getString("uuid"), new Resume(rs1.getString("uuid"), rs1.getString("full_name")));
                 }
-                Map<String, String> mapContact = new HashMap<>();
                 ResultSet rs2 = ps2.executeQuery();
                 while (rs2.next()) {
-                    mapContact.put(rs2.getString("resume_uuid") + rs2.getString("type"), rs2.getString("value"));
-                }
-                for (int i = 0; i < resumes.size(); i++) {
-                    Resume resume = resumes.get(i);
-                    for (Map.Entry<String, String> contact : mapContact.entrySet()) {
-                        String uuid = contact.getKey().substring(0, 36);
-                        if (resume.getUuid().equals(uuid)) {
-                            resume.addContact(ContactType.valueOf(contact.getKey().substring(36)), contact.getValue());
-                        }
+                    final String uuid = rs2.getString("resume_uuid");
+                    if (mapResume.containsKey(uuid)) {
+                        mapResume.get(uuid).addContact(ContactType.valueOf(rs2.getString("type")), rs2.getString("value"));
                     }
-                    resumes.set(i, resume);
                 }
             }
             return null;
         });
+        final ArrayList<Resume> resumes = new ArrayList<>(mapResume.values());
+        resumes.sort(RESUME_COMPARATOR);
         return resumes;
     }
 
