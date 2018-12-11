@@ -7,6 +7,7 @@ import com.urise.webapp.sql.SqlHelper;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -92,35 +93,28 @@ public class SqlStorage implements Storage {
     public List<Resume> getAllSorted() {
         lOG.info("GetAllSorted");
         List<Resume> resumes = new ArrayList<>();
-        /*sqlHelper.sqlTransactionalExecute(conn -> {
-            try (PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM resume r ORDER BY full_name, uuid");
-                 PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM contact c WHERE c.resume_uuid = ?")) {
-                ResultSet rs1 = ps1.executeQuery();
-                while (rs1.next()) {
-                    Resume resume = new Resume(rs1.getString("uuid"), rs1.getString("full_name"));
-                    ps2.setString(1, rs1.getString("uuid"));
-                    ResultSet rs2 = ps2.executeQuery();
-                    while (rs2.next()) {
-                        addContact(resume, rs2);
-                    }
-                    resumes.add(resume);
-                }
-            }
-            return null;
-        });*/
         sqlHelper.sqlTransactionalExecute(conn -> {
             try (PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM resume r ORDER BY full_name, uuid");
                  PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM contact c")) {
                 ResultSet rs1 = ps1.executeQuery();
                 while (rs1.next()) {
                     Resume resume = new Resume(rs1.getString("uuid"), rs1.getString("full_name"));
-                    ResultSet rs2 = ps2.executeQuery();
-                    while (rs2.next()) {
-                        if (rs1.getString("uuid").equals(rs2.getString("resume_uuid"))) {
-                            addContact(resume, rs2);
+                    resumes.add(resume);
+                }
+                Map<String, String> mapContact = new HashMap<>();
+                ResultSet rs2 = ps2.executeQuery();
+                while (rs2.next()) {
+                    mapContact.put(rs2.getString("resume_uuid") + rs2.getString("type"), rs2.getString("value"));
+                }
+                for (int i = 0; i < resumes.size(); i++) {
+                    Resume resume = resumes.get(i);
+                    for (Map.Entry<String, String> contact : mapContact.entrySet()) {
+                        String uuid = contact.getKey().substring(0, 36);
+                        if (resume.getUuid().equals(uuid)) {
+                            resume.addContact(ContactType.valueOf(contact.getKey().substring(36)), contact.getValue());
                         }
                     }
-                    resumes.add(resume);
+                    resumes.set(i, resume);
                 }
             }
             return null;
