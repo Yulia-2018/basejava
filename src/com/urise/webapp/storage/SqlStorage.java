@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
     private static final Logger lOG = Logger.getLogger(SqlStorage.class.getName());
-    private static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> o1.getFullName().compareTo(o2.getFullName()) != 0 ? o1.getFullName().compareTo(o2.getFullName()) : o1.getUuid().compareTo(o2.getUuid());
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
         this.sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
@@ -90,9 +89,9 @@ public class SqlStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
         lOG.info("GetAllSorted");
-        Map<String, Resume> mapResume = new HashMap<>();
+        Map<String, Resume> mapResume = new LinkedHashMap<>();
         sqlHelper.sqlTransactionalExecute(conn -> {
-            try (PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM resume r");
+            try (PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM resume r ORDER BY full_name, uuid");
                  PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM contact c")) {
                 ResultSet rs1 = ps1.executeQuery();
                 while (rs1.next()) {
@@ -108,9 +107,7 @@ public class SqlStorage implements Storage {
             }
             return null;
         });
-        final ArrayList<Resume> resumes = new ArrayList<>(mapResume.values());
-        resumes.sort(RESUME_COMPARATOR);
-        return resumes;
+        return new ArrayList<>(mapResume.values());
     }
 
     @Override
