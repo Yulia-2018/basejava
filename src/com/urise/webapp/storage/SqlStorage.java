@@ -79,7 +79,7 @@ public class SqlStorage implements Storage {
     @Override
     public void delete(String uuid) {
         lOG.info("Delete " + uuid);
-        sqlHelper.sqlExecute("DELETE FROM resume r WHERE r.uuid = ?", ps -> {
+        sqlHelper.<Void>sqlExecute("DELETE FROM resume r WHERE r.uuid = ?", ps -> {
             ps.setString(1, uuid);
             executeUpdate(uuid, ps);
             return null;
@@ -90,7 +90,7 @@ public class SqlStorage implements Storage {
     public List<Resume> getAllSorted() {
         lOG.info("GetAllSorted");
         Map<String, Resume> mapResume = new LinkedHashMap<>();
-        sqlHelper.sqlTransactionalExecute(conn -> {
+        return sqlHelper.sqlTransactionalExecute(conn -> {
             try (PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM resume r ORDER BY full_name, uuid");
                  PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM contact c")) {
                 ResultSet rs1 = ps1.executeQuery();
@@ -99,20 +99,16 @@ public class SqlStorage implements Storage {
                 }
                 ResultSet rs2 = ps2.executeQuery();
                 while (rs2.next()) {
-                    final String uuid = rs2.getString("resume_uuid");
-                    if (mapResume.containsKey(uuid)) {
-                        mapResume.get(uuid).addContact(ContactType.valueOf(rs2.getString("type")), rs2.getString("value"));
-                    }
+                    addContact(mapResume.get(rs2.getString("resume_uuid")), rs2);
                 }
             }
-            return null;
+            return new ArrayList<>(mapResume.values());
         });
-        return new ArrayList<>(mapResume.values());
     }
 
     @Override
     public int size() {
-        return sqlHelper.sqlExecute("SELECT COUNT(*) FROM resume r", ps -> {
+        return sqlHelper.sqlExecute("SELECT COUNT(*) FROM resume", ps -> {
             ResultSet rs = ps.executeQuery();
             rs.next();
             return rs.getInt(1);
@@ -122,8 +118,9 @@ public class SqlStorage implements Storage {
     private void insertContact(Resume resume, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact(resume_uuid, type, value) VALUES(?, ?, ?)")) {
             final Map<ContactType, String> contacts = resume.getContacts();
+            final String uuid = resume.getUuid();
             for (Map.Entry<ContactType, String> contact : contacts.entrySet()) {
-                ps.setString(1, resume.getUuid());
+                ps.setString(1, uuid);
                 ps.setString(2, contact.getKey().name());
                 ps.setString(3, contact.getValue());
                 ps.addBatch();
@@ -133,8 +130,9 @@ public class SqlStorage implements Storage {
     }
 
     private void addContact(Resume resume, ResultSet rs) throws SQLException {
-        if (rs.getString("type") != null) {
-            resume.addContact(ContactType.valueOf(rs.getString("type")), rs.getString("value"));
+        final String type = rs.getString("type");
+        if (type != null) {
+            resume.addContact(ContactType.valueOf(type), rs.getString("value"));
         }
     }
 

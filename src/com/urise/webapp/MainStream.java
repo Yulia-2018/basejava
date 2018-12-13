@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -45,11 +46,20 @@ public class MainStream {
     }
 
     private static int minValue(int[] values) {
-        return Arrays.stream(values).distinct().sorted().reduce(0, (acc, x) -> acc * 10 + x);
+        return Arrays.stream(values)
+                .distinct()
+                .sorted()
+                .reduce(0, (acc, x) -> acc * 10 + x);
     }
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
-        final Integer reduce = integers.stream().reduce(0, (a, b) -> a + b);
-        return integers.stream().filter(x -> x % 2 != reduce % 2).collect(Collectors.toList());
+        /*final Integer reduce = integers.stream().reduce(0, (a, b) -> a + b);
+        return integers.stream().filter(x -> x % 2 != reduce % 2).collect(Collectors.toList());*/
+
+        AtomicInteger sum = new AtomicInteger(0);
+        return integers.stream()
+                .peek(sum::getAndAdd)
+                .collect(Collectors.partitioningBy(x -> x % 2 == 0))
+                .get(sum.get() % 2 != 0);
     }
 }
