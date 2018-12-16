@@ -1,7 +1,6 @@
 package com.urise.webapp;
 
-import com.urise.webapp.model.ContactType;
-import com.urise.webapp.model.Resume;
+import com.urise.webapp.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +42,14 @@ public class ResumeTestData {
                 "Luxoft",
                 "https://www.Luxoft.com",
                 new Organization.Position(DateUtil.of(2013, NOVEMBER), DateUtil.of(2014, OCTOBER), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null)));
-
+*/
         resume_1.addSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         resume_1.addSection(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
         resume_1.addSection(SectionType.ACHIEVEMENT, new ListSection("С 2013 года: разработка проектов \"Разработка Web приложения\"", "Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike"));
         resume_1.addSection(SectionType.QUALIFICATIONS, new ListSection("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2", "Version control: Subversion, Git, Mercury, ClearCase, Perforce"));
-        resume_1.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience_1));
-        resume_1.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_1));
-*/
+        /*resume_1.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience_1));
+        resume_1.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_1));*/
+
         // resume_2
         final Resume resume_2 = new Resume(UUID.randomUUID().toString(), "Inanov Dmitrii");
 
@@ -115,14 +114,14 @@ public class ResumeTestData {
                 "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
                 "http://www.ifmo.ru/ru/",
                 new Organization.Position(DateUtil.of(1993, DECEMBER), DateUtil.of(1996, JUNE), "Аспирантура (программист С, С++)", null)));
-
+*/
         resume_3.addSection(SectionType.OBJECTIVE, new TextSection("Ведущий корпоративного обучения"));
         resume_3.addSection(SectionType.PERSONAL, new TextSection("Сильная логика"));
         resume_3.addSection(SectionType.ACHIEVEMENT, new ListSection("Реализация c нуля Rich Internet Application приложения на стеке технологий JPA", "Создание JavaEE фреймворка для отказоустойчивого взаимодействия слабо-связанных сервисов"));
         resume_3.addSection(SectionType.QUALIFICATIONS, new ListSection("Languages: Java, Scala, Python/Jython/PL-Python, JavaScript, Groovy", "XML/XSD/XSLT, SQL, C/C++, Unix shell scripts", "Java Frameworks: Java 8 (Time API, Streams), Guava, Java Executor, MyBatis, Spring (MVC, Security, Data, Clouds, Boot)"));
-        resume_3.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience_3));
-        resume_3.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_3));
-*/
+        /*resume_3.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience_3));
+        resume_3.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_3));*/
+
         // resume_4
         final Resume resume_4 = new Resume(UUID.randomUUID().toString(), "Inanov Petr");
 
@@ -153,12 +152,12 @@ public class ResumeTestData {
                 "КемГУ",
                 null,
                 new Organization.Position(DateUtil.of(2003, OCTOBER), DateUtil.of(2008, DECEMBER), "Факультет информатики", null)));
-
+*/
         resume_4.addSection(SectionType.OBJECTIVE, new TextSection("Разработчик"));
         resume_4.addSection(SectionType.PERSONAL, new TextSection("Креативность, инициативность. Пурист кода и архитектуры."));
         resume_4.addSection(SectionType.ACHIEVEMENT, new ListSection("Реализация протоколов по приему платежей всех основных платежных системы России", "Реализация онлайн клиента для администрирования и мониторинга системы по JMX (Jython/ Django)", "Организация онлайн стажировок и ведение проектов"));
         resume_4.addSection(SectionType.QUALIFICATIONS, new ListSection("Python: Django", "JavaScript: jQuery, ExtJS, Bootstrap.js, underscore.js", "Scala: SBT, Play2, Specs2, Anorm, Spray, Akka"));
-        resume_4.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience_4));
+        /*resume_4.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience_4));
         resume_4.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_4));*/
 
         // resume_5, For method "update"
@@ -196,14 +195,14 @@ public class ResumeTestData {
                 null,
                 new Organization.Position(DateUtil.of(2010, JUNE), DateUtil.of(2010, OCTOBER), "Курс по оптимизации", null),
                 new Organization.Position(DateUtil.of(2005, MAY), DateUtil.of(2005, SEPTEMBER), "Курсы повышения квалификации", null)));
-
+*/
         resume_5.addSection(SectionType.OBJECTIVE, new TextSection("Экономист"));
         resume_5.addSection(SectionType.PERSONAL, new TextSection("Инициативность."));
         resume_5.addSection(SectionType.ACHIEVEMENT, new ListSection("Удаленное взаимодействие (JMS/AKKA)", "Интеграция с Twilio, DuoSecurity, Google Authenticator, Jira, Zendesk", "Разработка SSO аутентификации и авторизации различных ERP модулей, интеграция CIFS/SMB java сервера"));
         resume_5.addSection(SectionType.QUALIFICATIONS, new ListSection("Технологии: Servlet, JSP/JSTL, JAX-WS, REST, EJB, RMI, JMS"));
-        resume_5.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience_5));
-        resume_5.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_5));
-*/
+        /*resume_5.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience_5));
+        resume_5.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation_5));*/
+
         listResume.add(resume_1);
         listResume.add(resume_2);
         listResume.add(resume_3);
