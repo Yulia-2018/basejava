@@ -63,33 +63,33 @@ public class SqlStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         lOG.info("Get " + uuid);
-        Resume result = sqlHelper.sqlExecute("" +
-                "SELECT *\n" +
-                "FROM resume r\n" +
-                "  LEFT JOIN contact c ON r.uuid = c.resume_uuid\n" +
-                "WHERE r.uuid = ?", ps -> {
-            ps.setString(1, uuid);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                lOG.warning("Resume " + uuid + " not exist");
-                throw new NotExistStorageException(uuid);
+        return sqlHelper.sqlTransactionalExecute(conn -> {
+            try (PreparedStatement ps1 = conn.prepareStatement("" +
+                    "SELECT *\n" +
+                    "FROM resume r\n" +
+                    "  LEFT JOIN contact c ON r.uuid = c.resume_uuid\n" +
+                    "WHERE r.uuid = ?");
+                 PreparedStatement ps2 = conn.prepareStatement("" +
+                         "SELECT *\n" +
+                         "FROM section s\n" +
+                         "WHERE s.resume_uuid = ?")) {
+                ps1.setString(1, uuid);
+                ResultSet rs1 = ps1.executeQuery();
+                if (!rs1.next()) {
+                    lOG.warning("Resume " + uuid + " not exist");
+                    throw new NotExistStorageException(uuid);
+                }
+                Resume resume = new Resume(uuid, rs1.getString("full_name"));
+                do {
+                    addContact(resume, rs1);
+                } while (rs1.next());
+                ps2.setString(1, uuid);
+                ResultSet rs2 = ps2.executeQuery();
+                while (rs2.next()) {
+                    addSection(resume, rs2);
+                }
+                return resume;
             }
-            Resume resume = new Resume(uuid, rs.getString("full_name"));
-            do {
-                addContact(resume, rs);
-            } while (rs.next());
-            return resume;
-        });
-        return sqlHelper.sqlExecute("" +
-                "SELECT *\n" +
-                "FROM section s\n" +
-                "WHERE s.resume_uuid = ?", ps -> {
-            ps.setString(1, uuid);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                addSection(result, rs);
-            }
-            return result;
         });
     }
 
@@ -169,12 +169,8 @@ public class SqlStorage implements Storage {
                     case QUALIFICATIONS:
                         final ListSection listSection = (ListSection) section.getValue();
                         final List<String> items = listSection.getItems();
-                        StringBuilder value = new StringBuilder();
-                        for (String item : items) {
-                            value.append(item).append("\n");
-                        }
-                        value.delete(value.length() - 1, value.length());
-                        ps.setString(3, String.valueOf(value));
+                        String value = String.join("\n", items);
+                        ps.setString(3, value);
                         break;
                 }
                 ps.addBatch();

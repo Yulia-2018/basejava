@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
+    private static final SqlStorage sqlStorage = (SqlStorage) Config.get().getStorage();
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     }
@@ -33,7 +35,6 @@ public class ResumeServlet extends HttpServlet {
         }
 
         final String uuid = request.getParameter("uuid");
-        final SqlStorage sqlStorage = (SqlStorage) Config.get().getStorage();
         String html = "";
         if (uuid != null) {
             try {
