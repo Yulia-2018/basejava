@@ -22,40 +22,40 @@ public class DataStreamSerializer implements StreamSerializer {
             });
 
             final Map<SectionType, AbstractSection> sections = resume.getSections();
-            dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
+            writeCollection(dos, sections.entrySet(), entry -> {
                 final SectionType type = entry.getKey();
+                final AbstractSection section = entry.getValue();
                 dos.writeUTF(type.name());
                 switch (type) {
                     case OBJECTIVE:
                     case PERSONAL:
-                        final TextSection textSection = (TextSection) resume.getSection(type);
+                        final TextSection textSection = (TextSection) section;
                         dos.writeUTF(textSection.getContent());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        final ListSection listSection = (ListSection) resume.getSection(type);
+                        final ListSection listSection = (ListSection) section;
                         final List<String> items = listSection.getItems();
                         writeCollection(dos, items, dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        final OrganizationSection organizationSection = (OrganizationSection) resume.getSection(type);
+                        final OrganizationSection organizationSection = (OrganizationSection) section;
                         final List<Organization> organizations = organizationSection.getOrganizations();
                         writeCollection(dos, organizations, organization -> {
                             dos.writeUTF(organization.getHomePage().getName());
                             dos.writeUTF(organization.getHomePage().getUrl());
                             final List<Organization.Position> positions = organization.getPositions();
                             writeCollection(dos, positions, position -> {
-                                writeDate(dos, position.getStartDate());
-                                writeDate(dos, position.getEndDate());
+                                writeLocalDate(dos, position.getStartDate());
+                                writeLocalDate(dos, position.getEndDate());
                                 dos.writeUTF(position.getTitle());
                                 dos.writeUTF(position.getDescription());
                             });
                         });
                         break;
                 }
-            }
+            });
         }
     }
 
@@ -69,36 +69,39 @@ public class DataStreamSerializer implements StreamSerializer {
 
             readCollection(dis, () -> {
                 final SectionType sectionType = SectionType.valueOf(dis.readUTF());
-                switch (sectionType) {
-                    case OBJECTIVE:
-                    case PERSONAL:
-                        resume.addSection(sectionType, new TextSection(dis.readUTF()));
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
-                        final List<String> list = new ArrayList<>();
-                        readCollection(dis, () -> list.add(dis.readUTF()));
-                        resume.addSection(sectionType, new ListSection(list));
-                        break;
-                    case EXPERIENCE:
-                    case EDUCATION:
-                        final List<Organization> listOrganization = new ArrayList<>();
-                        readCollection(dis, () -> {
-                            String name = dis.readUTF();
-                            String url = dis.readUTF();
-                            final List<Organization.Position> listPosition = new ArrayList<>();
-                            readCollection(dis, () -> listPosition.add(new Organization.Position(
-                                    readDate(dis.readInt(), dis.readInt(), dis.readInt()),
-                                    readDate(dis.readInt(), dis.readInt(), dis.readInt()),
-                                    dis.readUTF(),
-                                    dis.readUTF())));
-                            listOrganization.add(new Organization(new Link(name, url), listPosition));
-                        });
-                        resume.addSection(sectionType, new OrganizationSection(listOrganization));
-                        break;
-                }
+                resume.addSection(sectionType, readSection(dis, sectionType));
             });
             return resume;
+        }
+    }
+
+    private AbstractSection readSection(DataInputStream dis, SectionType sectionType) throws IOException {
+        switch (sectionType) {
+            case OBJECTIVE:
+            case PERSONAL:
+                return new TextSection(dis.readUTF());
+            case ACHIEVEMENT:
+            case QUALIFICATIONS:
+                final List<String> list = new ArrayList<>();
+                readCollection(dis, () -> list.add(dis.readUTF()));
+                return new ListSection(list);
+            case EXPERIENCE:
+            case EDUCATION:
+                final List<Organization> listOrganization = new ArrayList<>();
+                readCollection(dis, () -> {
+                    String name = dis.readUTF();
+                    String url = dis.readUTF();
+                    final List<Organization.Position> listPosition = new ArrayList<>();
+                    readCollection(dis, () -> listPosition.add(new Organization.Position(
+                            readLocalDate(dis),
+                            readLocalDate(dis),
+                            dis.readUTF(),
+                            dis.readUTF())));
+                    listOrganization.add(new Organization(new Link(name, url), listPosition));
+                });
+                return new OrganizationSection(listOrganization);
+            default:
+                throw new IllegalStateException();
         }
     }
 
@@ -124,13 +127,13 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void writeDate(DataOutputStream dos, LocalDate localDate) throws IOException {
+    private void writeLocalDate(DataOutputStream dos, LocalDate localDate) throws IOException {
         dos.writeInt(localDate.getYear());
         dos.writeInt(localDate.getMonth().getValue());
         dos.writeInt(1);
     }
 
-    private LocalDate readDate(int year, int month, int day) {
-        return LocalDate.of(year, month, day);
+    private LocalDate readLocalDate(DataInputStream dis) throws IOException {
+        return LocalDate.of(dis.readInt(), dis.readInt(), dis.readInt());
     }
 }
