@@ -42,7 +42,6 @@
             </c:when>
             <c:when test="${(sectionEntry.key == SectionType.EXPERIENCE) || (sectionEntry.key == SectionType.EDUCATION)}">
                 <c:forEach var="organization" items="${sectionEntry.value.organizations}">
-                    <%--<p>--%>
                     <c:set var="notUrl" value=""/>
                     <c:if test="${organization.homePage.url == notUrl}">
                         <h3>${organization.homePage.name}</h3>
@@ -50,7 +49,6 @@
                     <c:if test="${organization.homePage.url != notUrl}">
                         <h3><a href="${organization.homePage.url}">${organization.homePage.name}</a></h3>
                     </c:if>
-                    <%--</p>--%>
                     <c:forEach var="position" items="${organization.positions}">
                         <table cellpadding="2">
                             <tr>
