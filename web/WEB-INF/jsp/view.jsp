@@ -28,10 +28,10 @@
                      type="java.util.Map.Entry<com.urise.webapp.model.SectionType, com.urise.webapp.model.AbstractSection>"/>
         <h2><%=sectionEntry.getKey().getTitle()%><br/></h2>
         <c:choose>
-            <c:when test="${(sectionEntry.key == SectionType.OBJECTIVE) || (sectionEntry.key == SectionType.PERSONAL)}">
+            <c:when test="${(sectionEntry.key.equals(SectionType.OBJECTIVE)) || (sectionEntry.key.equals(SectionType.PERSONAL))}">
                 ${sectionEntry.value.content}
             </c:when>
-            <c:when test="${(sectionEntry.key == SectionType.ACHIEVEMENT) || (sectionEntry.key == SectionType.QUALIFICATIONS)}">
+            <c:when test="${(sectionEntry.key.equals(SectionType.ACHIEVEMENT)) || (sectionEntry.key.equals(SectionType.QUALIFICATIONS))}">
                 <c:forEach var="item" items="${sectionEntry.value.items}">
                     <ul>
                         <li>
@@ -40,26 +40,29 @@
                     </ul>
                 </c:forEach>
             </c:when>
-            <c:when test="${(sectionEntry.key == SectionType.EXPERIENCE) || (sectionEntry.key == SectionType.EDUCATION)}">
-                <c:forEach var="organization" items="${sectionEntry.value.organizations}">
-                    <c:set var="notUrl" value=""/>
-                    <c:if test="${organization.homePage.url == notUrl}">
-                        <h3>${organization.homePage.name}</h3>
-                    </c:if>
-                    <c:if test="${organization.homePage.url != notUrl}">
-                        <h3><a href="${organization.homePage.url}">${organization.homePage.name}</a></h3>
-                    </c:if>
-                    <c:forEach var="position" items="${organization.positions}">
-                        <table cellpadding="2">
+            <c:when test="${(sectionEntry.key.equals(SectionType.EXPERIENCE)) || (sectionEntry.key.equals(SectionType.EDUCATION))}">
+                <table>
+                    <c:forEach var="organization" items="${sectionEntry.value.organizations}">
+                        <tr>
+                            <td colspan="2">
+                                <c:if test="${empty organization.homePage.url}">
+                                    <h3>${organization.homePage.name}</h3>
+                                </c:if>
+                                <c:if test="${not empty organization.homePage.url}">
+                                    <h3><a href="${organization.homePage.url}">${organization.homePage.name}</a></h3>
+                                </c:if>
+                            </td>
+                        </tr>
+                        <c:forEach var="position" items="${organization.positions}">
                             <tr>
                                 <td width="20%" style="vertical-align: top">${position.startDate} - ${position.endDate}
                                 </td>
                                 <td><b>${position.title}</b><br>${position.description}
                                 </td>
                             </tr>
-                        </table>
+                        </c:forEach>
                     </c:forEach>
-                </c:forEach>
+                </table>
             </c:when>
             <c:otherwise>
                 Section not exists

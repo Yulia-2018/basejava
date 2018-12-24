@@ -32,26 +32,19 @@
         <c:forEach var="type" items="<%=SectionType.values()%>">
             <dl>
                 <c:choose>
-                    <c:when test="${(type == SectionType.OBJECTIVE) || (type == SectionType.PERSONAL)}">
+                    <c:when test="${(type.equals(SectionType.OBJECTIVE)) || (type.equals(SectionType.PERSONAL))}">
                         <dt>${type.title}</dt>
                         <dd><input type="text" name="${type.name()}" size=50 value="${resume.getSection(type)}"></dd>
                     </c:when>
-                    <c:when test="${(type == SectionType.ACHIEVEMENT) || (type == SectionType.QUALIFICATIONS)}">
+                    <c:when test="${(type.equals(SectionType.ACHIEVEMENT)) || (type.equals(SectionType.QUALIFICATIONS))}">
                         <dt>${type.title}</dt>
                         <br/>
-                        <c:forEach var="item" items="${resume.getSection(type).items}">
-                            <dl>
-                                <dd><input type="text" name="${type.name()}" size=100 value="${item}"></dd>
-                            </dl>
-                        </c:forEach>
-                        <%--<label>
-                            <textarea name="all_string" style="display:block;width:400px;height:100px"></textarea>
-                        </label>--%>
-                        <%--<c:if test="${resume.getSection(type).items.size() == null}">
-                            <p><dd><input type="text" name="${type.name()}" size=100 value=""></dd><br/>
-                            </p>
-                        </c:if>--%>
-                        <dd><input type="text" name="${type.name()}" size=100 value=""></dd>
+                        <c:if test="${resume.getSection(type) != null}">
+                            <textarea name=${type} style="display:block;width:900px;height:100px">${resume.getSection(type)}</textarea>
+                        </c:if>
+                        <c:if test="${resume.getSection(type) == null}">
+                            <textarea name=${type} style="display:block;width:900px;height:100px"></textarea>
+                        </c:if>
                         <br/>
                     </c:when>
                 </c:choose>

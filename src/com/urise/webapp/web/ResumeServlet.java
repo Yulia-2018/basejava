@@ -27,7 +27,7 @@ public class ResumeServlet extends HttpServlet {
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
         Resume r;
-        if (uuid == "") {
+        if (uuid.isEmpty()) {
             r = new Resume(fullName);
         } else {
             r = storage.get(uuid);
@@ -54,7 +54,8 @@ public class ResumeServlet extends HttpServlet {
                     break;
                 case ACHIEVEMENT:
                 case QUALIFICATIONS:
-                    String[] values = request.getParameterValues(type.name());
+                    String parameter = request.getParameter(type.name());
+                    String[] values = parameter.split("\n");
                     List<String> result = new ArrayList<>();
                     for (String item : values) {
                         if (item != null && item.trim().length() != 0) {
@@ -69,7 +70,7 @@ public class ResumeServlet extends HttpServlet {
                     break;
             }
         }
-        if (uuid == "") {
+        if (uuid.isEmpty()) {
             storage.save(r);
         } else {
             storage.update(r);
