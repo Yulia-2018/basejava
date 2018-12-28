@@ -10,8 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ResumeServlet extends HttpServlet {
     private static Storage storage; //= (SqlStorage) Config.get().getStorage();
@@ -64,6 +66,38 @@ public class ResumeServlet extends HttpServlet {
                     }
                     if (result.size() != 0) {
                         r.addSection(type, new ListSection(result));
+                    } else {
+                        r.getSections().remove(type);
+                    }
+                    break;
+                case EXPERIENCE:
+                case EDUCATION:
+                    Map<String, String[]> parameterMap = request.getParameterMap();
+                    final String substring = type.name().substring(0, 9);
+                    List<Organization> organizations = new ArrayList<>();
+                    for (Map.Entry<String, String[]> entri : parameterMap.entrySet()) {
+                        if (entri.getKey().contains(type.name())) {
+                            String[] parameterValues = request.getParameterValues(entri.getKey());
+                            String name = parameterValues[0];
+                            if (name != null && name.trim().length() != 0) {
+                                String url = parameterValues[1];
+                                int length = parameterValues.length;
+                                List<Organization.Position> positions = new ArrayList<>();
+                                for (int i = 2; i < length - 3; i = i + 4) {
+                                    if (!parameterValues[i].isEmpty() && !parameterValues[i + 2].isEmpty()) {
+                                        LocalDate ld1 = LocalDate.parse(parameterValues[i]);
+                                        LocalDate ld2 = LocalDate.parse(parameterValues[i + 2]);
+                                        Organization.Position position = new Organization.Position(ld1, ld2, parameterValues[i + 1], parameterValues[i + 3]);
+                                        positions.add(position);
+                                    }
+                                }
+                                Organization organization = new Organization(new Link(name, url), positions);
+                                organizations.add(organization);
+                            }
+                        }
+                    }
+                    if (organizations.size() != 0) {
+                        r.addSection(type, new OrganizationSection(organizations));
                     } else {
                         r.getSections().remove(type);
                     }
