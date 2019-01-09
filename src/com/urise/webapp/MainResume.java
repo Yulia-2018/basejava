@@ -14,13 +14,13 @@ public class MainResume {
         String fullName = "Григорий Кислин";
         Resume resume = new Resume(fullName);
 
-        resume.addContact(ContactType.PHONE, "+7(921) 855-0482");
-        resume.addContact(ContactType.SKYPE, "grigory.kislin");
-        resume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
-        resume.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
-        resume.addContact(ContactType.GITHUB, "https://github.com/gkislin");
-        resume.addContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/gkislin");
-        resume.addContact(ContactType.HOME_PAGE, "http://gkislin.ru/");
+        resume.setContact(ContactType.PHONE, "+7(921) 855-0482");
+        resume.setContact(ContactType.SKYPE, "grigory.kislin");
+        resume.setContact(ContactType.EMAIL, "gkislin@yandex.ru");
+        resume.setContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
+        resume.setContact(ContactType.GITHUB, "https://github.com/gkislin");
+        resume.setContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/gkislin");
+        resume.setContact(ContactType.HOME_PAGE, "http://gkislin.ru/");
 
         List<Organization> listExperience = new ArrayList<>();
         Organization experience1 = new Organization(
@@ -48,12 +48,12 @@ public class MainResume {
                 new Organization.Position(DateUtil.of(2005, MAY), DateUtil.of(2005, SEPTEMBER), "Курсы повышения квалификации", null));
         listEducation.add(education2);
 
-        resume.addSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
-        resume.addSection(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
-        resume.addSection(SectionType.ACHIEVEMENT, new ListSection("С 2013 года: разработка проектов \"Разработка Web приложения\"", "Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike"));
-        resume.addSection(SectionType.QUALIFICATIONS, new ListSection("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2", "Version control: Subversion, Git, Mercury, ClearCase, Perforce"));
-        resume.addSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience));
-        resume.addSection(SectionType.EDUCATION, new OrganizationSection(listEducation));
+        resume.setSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
+        resume.setSection(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
+        resume.setSection(SectionType.ACHIEVEMENT, new ListSection("С 2013 года: разработка проектов \"Разработка Web приложения\"", "Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike"));
+        resume.setSection(SectionType.QUALIFICATIONS, new ListSection("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2", "Version control: Subversion, Git, Mercury, ClearCase, Perforce"));
+        resume.setSection(SectionType.EXPERIENCE, new OrganizationSection(listExperience));
+        resume.setSection(SectionType.EDUCATION, new OrganizationSection(listEducation));
 
         System.out.println(resume.getFullName() + "\n");
 
