@@ -1,7 +1,5 @@
 <%@ page import="com.urise.webapp.model.SectionType" %>
-<%@ page import="com.urise.webapp.model.TextSection" %>
-<%@ page import="com.urise.webapp.model.ListSection" %>
-<%@ page import="java.util.List" %>
+<%@ page import="com.urise.webapp.util.DateUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -26,19 +24,19 @@
     <c:forEach var="sectionEntry" items="${resume.sections}">
         <jsp:useBean id="sectionEntry"
                      type="java.util.Map.Entry<com.urise.webapp.model.SectionType, com.urise.webapp.model.AbstractSection>"/>
-        <h2><%=sectionEntry.getKey().getTitle()%><br/></h2>
+        <h2>${sectionEntry.key.title}<br/></h2>
         <c:choose>
             <c:when test="${(sectionEntry.key.equals(SectionType.OBJECTIVE)) || (sectionEntry.key.equals(SectionType.PERSONAL))}">
                 ${sectionEntry.value.content}
             </c:when>
             <c:when test="${(sectionEntry.key.equals(SectionType.ACHIEVEMENT)) || (sectionEntry.key.equals(SectionType.QUALIFICATIONS))}">
-                <c:forEach var="item" items="${sectionEntry.value.items}">
-                    <ul>
+                <ul>
+                    <c:forEach var="item" items="${sectionEntry.value.items}">
                         <li>
                             <p>${item}</p>
                         </li>
-                    </ul>
-                </c:forEach>
+                    </c:forEach>
+                </ul>
             </c:when>
             <c:when test="${(sectionEntry.key.equals(SectionType.EXPERIENCE)) || (sectionEntry.key.equals(SectionType.EDUCATION))}">
                 <table>
@@ -54,8 +52,10 @@
                             </td>
                         </tr>
                         <c:forEach var="position" items="${organization.positions}">
+                            <jsp:useBean id="position"
+                                         type="com.urise.webapp.model.Organization.Position"/>
                             <tr>
-                                <td width="20%" style="vertical-align: top">${position.startDate} - ${position.endDate}
+                                <td width="20%" style="vertical-align: top"><%=DateUtil.format(position.getStartDate())%> - <%=DateUtil.format(position.getEndDate())%>
                                 </td>
                                 <td><b>${position.title}</b><br>${position.description}
                                 </td>

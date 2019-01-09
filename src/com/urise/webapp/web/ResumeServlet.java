@@ -3,6 +3,7 @@ package com.urise.webapp.web;
 import com.urise.webapp.Config;
 import com.urise.webapp.model.*;
 import com.urise.webapp.storage.Storage;
+import com.urise.webapp.util.DateUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -10,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +38,7 @@ public class ResumeServlet extends HttpServlet {
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (value != null && value.trim().length() != 0) {
-                r.addContact(type, value);
+                r.setContact(type, value);
             } else {
                 r.getContacts().remove(type);
             }
@@ -49,7 +49,7 @@ public class ResumeServlet extends HttpServlet {
                 case PERSONAL:
                     String value = request.getParameter(type.name());
                     if (value != null && value.trim().length() != 0) {
-                        r.addSection(type, new TextSection(value));
+                        r.setSection(type, new TextSection(value));
                     } else {
                         r.getSections().remove(type);
                     }
@@ -65,7 +65,7 @@ public class ResumeServlet extends HttpServlet {
                         }
                     }
                     if (result.size() != 0) {
-                        r.addSection(type, new ListSection(result));
+                        r.setSection(type, new ListSection(result));
                     } else {
                         r.getSections().remove(type);
                     }
@@ -73,7 +73,6 @@ public class ResumeServlet extends HttpServlet {
                 case EXPERIENCE:
                 case EDUCATION:
                     Map<String, String[]> parameterMap = request.getParameterMap();
-                    final String substring = type.name().substring(0, 9);
                     List<Organization> organizations = new ArrayList<>();
                     for (Map.Entry<String, String[]> entri : parameterMap.entrySet()) {
                         if (entri.getKey().contains(type.name())) {
@@ -84,10 +83,8 @@ public class ResumeServlet extends HttpServlet {
                                 int length = parameterValues.length;
                                 List<Organization.Position> positions = new ArrayList<>();
                                 for (int i = 2; i < length - 3; i = i + 4) {
-                                    if (!parameterValues[i].isEmpty() && !parameterValues[i + 2].isEmpty()) {
-                                        LocalDate ld1 = LocalDate.parse(parameterValues[i]);
-                                        LocalDate ld2 = LocalDate.parse(parameterValues[i + 2]);
-                                        Organization.Position position = new Organization.Position(ld1, ld2, parameterValues[i + 1], parameterValues[i + 3]);
+                                    if (!parameterValues[i + 2].isEmpty()) {
+                                        Organization.Position position = new Organization.Position(DateUtil.parse(parameterValues[i]), DateUtil.parse(parameterValues[i + 1]), parameterValues[i + 2], parameterValues[i + 3]);
                                         positions.add(position);
                                     }
                                 }
@@ -97,7 +94,7 @@ public class ResumeServlet extends HttpServlet {
                         }
                     }
                     if (organizations.size() != 0) {
-                        r.addSection(type, new OrganizationSection(organizations));
+                        r.setSection(type, new OrganizationSection(organizations));
                     } else {
                         r.getSections().remove(type);
                     }
@@ -127,11 +124,46 @@ public class ResumeServlet extends HttpServlet {
                 response.sendRedirect("resume");
                 return;
             case "view":
+                r = storage.get(uuid);
+                break;
             case "edit":
                 if (uuid == null) {
+                    //r = Resume.EMPTY;
                     r = new Resume();
                 } else {
                     r = storage.get(uuid);
+                }
+                for (SectionType type : SectionType.values()) {
+                    final AbstractSection section = r.getSection(type);
+                    switch (type) {
+                        case OBJECTIVE:
+                        case PERSONAL:
+                            if (section == null) {
+                                r.setSection(type, TextSection.EMPTY);
+                            }
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            if (section == null) {
+                                r.setSection(type, ListSection.EMPTY);
+                            }
+                            break;
+                        case EXPERIENCE:
+                        case EDUCATION:
+                            OrganizationSection orgSection = (OrganizationSection) section;
+                            List<Organization> organizations = new ArrayList<>();
+                            if (orgSection != null) {
+                                for (Organization organization : orgSection.getOrganizations()) {
+                                    List<Organization.Position> positions = new ArrayList<>();
+                                    positions.addAll(organization.getPositions());
+                                    positions.add(Organization.Position.EMPTY);
+                                    organizations.add(new Organization(organization.getHomePage(), positions));
+                                }
+                            }
+                            organizations.add(Organization.EMPTY);
+                            r.setSection(type, new OrganizationSection(organizations));
+                            break;
+                    }
                 }
                 break;
             default:
